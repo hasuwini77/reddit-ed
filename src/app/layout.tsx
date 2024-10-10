@@ -7,10 +7,25 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
+});
+
+const redditSans = localFont({
+  src: [
+    {
+      path: "./fonts/RedditSans-Regular.ttf",
+      weight: "400", // Regular weight
+    },
+    {
+      path: "./fonts/RedditSans-SemiBold.ttf", //
+      weight: "600",
+    },
+  ],
+  variable: "--font-reddit-sans",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`dark ${redditSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
