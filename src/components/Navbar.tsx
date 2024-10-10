@@ -41,7 +41,10 @@ export default function MyNavbar() {
         {/* Right side: Avatar and Create Post Button */}
         <NavbarContent justify="end" className="flex items-center gap-4 mx-3">
           {/* Button for creating post */}
-          <Button color="primary" className="flex items-center gap-2">
+          <Button
+            color="primary"
+            className="flex items-center gap-2 rounded-lg border-2"
+          >
             <PlusIcon className="h-5 w-5" />
             Create Post
           </Button>
