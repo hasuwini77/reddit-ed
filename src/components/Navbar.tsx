@@ -2,9 +2,6 @@ import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem,
-  Link,
-  Input,
   Button,
   Avatar,
 } from "@nextui-org/react";
@@ -17,7 +14,7 @@ export default function MyNavbar() {
     <div className="py-3">
       <Navbar isBordered>
         {/* Left side: Brand and Links */}
-        <NavbarContent justify="start" className="flex items-center">
+        <NavbarContent justify="start" className="flex items-center mx-2">
           <NavbarBrand className="mr-4 flex items-center">
             <Image src={"/eddriT.png"} alt="mylogo" width={70} height={70} />
             <p className="hidden sm:block font-bold font-sans text-2xl ml-2">
@@ -42,17 +39,21 @@ export default function MyNavbar() {
         </NavbarContent>
 
         {/* Right side: Avatar and Create Post Button */}
-        <NavbarContent justify="end" className="flex items-center gap-4">
+        <NavbarContent justify="end" className="flex items-center gap-4 mx-3">
           {/* Button for creating post */}
           <Button color="primary" className="flex items-center gap-2">
             <PlusIcon className="h-5 w-5" />
             Create Post
           </Button>
-          <Avatar
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-            alt="User Avatar"
-            size="md"
-          />
+          <div className="flex items-center">
+            <Image
+              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              alt="mylogo"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+          </div>
         </NavbarContent>
       </Navbar>
     </div>
