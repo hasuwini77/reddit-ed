@@ -9,7 +9,11 @@ import Image from "next/image";
 import { SearchIcon } from "./SearchIcon";
 import { PlusIcon } from "@heroicons/react/24/solid";
 
-export default function MyNavbar() {
+interface NavbarProps {
+  onCreatePostClick: () => void;
+}
+
+export default function MyNavbar({ onCreatePostClick }: NavbarProps) {
   return (
     <div className="py-3">
       <Navbar isBordered>
@@ -44,6 +48,7 @@ export default function MyNavbar() {
           <Button
             color="primary"
             className="flex items-center gap-2 rounded-lg border-2"
+            onClick={onCreatePostClick}
           >
             <PlusIcon className="h-5 w-5" />
             Create Post

@@ -9,8 +9,8 @@ export default function PostForm({ onSubmit }: PostFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, image, content }); // Pass the form data to parent component or handler
-    // Reset the form fields if needed:
+    onSubmit({ title, image, content });
+    // Reset form fields
     setTitle("");
     setImage("");
     setContent("");
