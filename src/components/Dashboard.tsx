@@ -1,7 +1,9 @@
+// pages/dashboard.tsx (or /pages/index.tsx if it's your homepage)
 import React from "react";
-import PostForm from "./PostForm";
-import MockupDashboard from "./MockupDashboard";
-import { FeedPost } from "./FeedPost";
+import PostForm from "../components/PostForm";
+import MockupDashboard from "../components/MockupDashboard";
+import HomeFeed from "../components/HomeFeed";
+import { PostProps } from "../../types";
 
 interface DashboardProps {
   showPostForm: boolean;
@@ -11,23 +13,19 @@ interface DashboardProps {
     image: string;
     content: string;
   }) => void;
+  posts: PostProps[];
 }
+
 const Dashboard: React.FC<DashboardProps> = ({
   showPostForm,
   onPostSubmit,
   selectedPage,
+  posts,
 }) => {
   const renderPageContent = () => {
     switch (selectedPage) {
       case "dashboard":
-        return (
-          <FeedPost
-            title={"test2"}
-            image={""}
-            content={"Content here"}
-            comments={""}
-          />
-        );
+        return <HomeFeed posts={posts} />;
       case "profile":
         return <ProfileContent />;
       case "settings":

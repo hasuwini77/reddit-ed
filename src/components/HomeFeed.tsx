@@ -1,19 +1,28 @@
 import { createClient } from "../../supabase/client";
 import { FeedPost } from "./FeedPost";
+import { PostProps } from "../../types";
 
-export default async function HomeFeed() {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("posts").select("*");
-  console.log({ data, error });
+interface HomeFeedProps {
+  posts: PostProps[];
+}
+
+export default function HomeFeed({ posts }: HomeFeedProps) {
+  if (!posts || posts.length === 0) {
+    return <div>No posts available.</div>;
+  }
 
   return (
     <div>
-      <FeedPost
-        title="test1"
-        image="test2.jpg"
-        content="betapost1"
-        comments={""}
-      />
+      {posts.map((post) => (
+        <FeedPost
+          key={post.id}
+          title={post.title}
+          image={post.image}
+          content={post.content}
+          comments={post.comments}
+          id={0}
+        />
+      ))}
     </div>
   );
 }

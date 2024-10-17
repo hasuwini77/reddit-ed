@@ -1,4 +1,5 @@
 export interface PostProps {
+  id: number;
     title: string;
     image: string; 
     content: string;
