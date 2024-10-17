@@ -5,7 +5,7 @@ import { PostProps } from "../../types";
 
 export default async function Home() {
   const supabase = createClient();
-  const { data, error } = await supabase.from("posts").select("*");
+  const { data, error } = await supabase.from("users").select("*");
   console.log({ data, error });
 
   if (error) {
