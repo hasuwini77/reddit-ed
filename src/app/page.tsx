@@ -6,7 +6,7 @@ import { PostProps } from "../../types";
 export default async function Home() {
   const supabase = createClient();
   const { data, error } = await supabase.from("posts").select("*");
-  console.log({ data });
+  console.log({ data, error });
 
   if (error) {
     console.error("Error fetching posts on the server:", error);
