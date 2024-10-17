@@ -17,7 +17,7 @@ export default function HomeFeed({ posts }: HomeFeedProps) {
         <FeedPost
           key={post.id}
           title={post.title}
-          image={post.image}
+          image={""}
           content={post.content}
           comments={post.comments}
           id={0}
