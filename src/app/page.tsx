@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export default function Home() {
   const [showPostForm, setShowPostForm] = useState(false);
+  const [pageSelected, setPageSelected] = useState("");
 
   const handleCreatePostClick = () => {
     setShowPostForm(true);
@@ -20,6 +21,10 @@ export default function Home() {
     setShowPostForm(false);
   };
 
+  const handlePageSelected = (page: string) => {
+    setPageSelected(page);
+  };
+
   return (
     <div className="font-sans">
       <MyNavbar onCreatePostClick={handleCreatePostClick} />
@@ -27,10 +32,12 @@ export default function Home() {
         <MySidebar
           showPostForm={showPostForm}
           onPostSubmit={handlePostSubmit}
+          onPageSelect={handlePageSelected}
         />
         <Dashboard
           showPostForm={showPostForm}
           onPostSubmit={handlePostSubmit}
+          selectedPage={pageSelected}
         />
       </div>
     </div>

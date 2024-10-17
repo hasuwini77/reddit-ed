@@ -19,29 +19,42 @@ interface MySidebarProps {
     image: string;
     content: string;
   }) => void;
+  onPageSelect: (page: string) => void;
 }
 
-export function MySidebar({ showPostForm, onPostSubmit }: MySidebarProps) {
+export function MySidebar({
+  showPostForm,
+  onPostSubmit,
+  onPageSelect,
+}: MySidebarProps) {
+  const handleMenuItemClick = (page: string) => {
+    onPageSelect(page);
+  };
+
   const links = [
     {
       label: "Dashboard",
       href: "#",
       icon: <IconBrandTabler className="text-white h-5 w-5 flex-shrink-0" />,
+      onClick: () => handleMenuItemClick("dashboard"),
     },
     {
       label: "Profile",
       href: "#",
       icon: <IconUserBolt className="text-white h-5 w-5 flex-shrink-0" />,
+      onClick: () => handleMenuItemClick("profile"),
     },
     {
       label: "Settings",
       href: "#",
       icon: <IconSettings className="text-white h-5 w-5 flex-shrink-0" />,
+      onClick: () => handleMenuItemClick("settings"),
     },
     {
       label: "Logout",
       href: "#",
       icon: <IconArrowLeft className="text-white h-5 w-5 flex-shrink-0" />,
+      onClick: () => handleMenuItemClick("logout"),
     },
   ];
   const [open, setOpen] = useState(false);
@@ -58,7 +71,7 @@ export function MySidebar({ showPostForm, onPostSubmit }: MySidebarProps) {
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} />
+                <SidebarLink key={idx} link={link} onClick={link.onClick} />
               ))}
             </div>
           </div>
