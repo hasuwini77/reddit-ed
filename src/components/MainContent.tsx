@@ -1,17 +1,14 @@
 "use client";
+import { useState, useEffect } from "react";
 import { MySidebar } from "@/components/Sidebar";
 import Dashboard from "@/components/Dashboard";
 import MyNavbar from "@/components/Navbar";
-import { useState } from "react";
+import { createClient } from "../../supabase/client";
 import { PostProps } from "../../types";
 
-interface MainContentProps {
-  posts: PostProps[];
-}
-
-export default function MainContent({ posts }: MainContentProps) {
+export default function MainContent({ posts }: { posts: PostProps[] }) {
   const [showPostForm, setShowPostForm] = useState(false);
-  const [pageSelected, setPageSelected] = useState("dashboard");
+  const [pageSelected, setPageSelected] = useState("feed");
 
   const handleCreatePostClick = () => {
     setShowPostForm(true);

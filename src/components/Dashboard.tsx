@@ -1,8 +1,7 @@
-// pages/dashboard.tsx (or /pages/index.tsx if it's your homepage)
 import React from "react";
-import PostForm from "../components/PostForm";
-import MockupDashboard from "../components/MockupDashboard";
-import HomeFeed from "../components/HomeFeed";
+import PostForm from "./PostForm";
+import MockupDashboard from "./MockupDashboard";
+import HomeFeed from "./HomeFeed";
 import { PostProps } from "../../types";
 
 interface DashboardProps {
@@ -24,14 +23,14 @@ const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const renderPageContent = () => {
     switch (selectedPage) {
-      case "dashboard":
+      case "feed":
         return <HomeFeed posts={posts} />;
       case "profile":
         return <ProfileContent />;
       case "settings":
         return <SettingsContent />;
       default:
-        return <DefaultContent />;
+        return <HomeFeed posts={posts} />;
     }
   };
 
@@ -59,7 +58,5 @@ const SettingsContent = () => (
     {/* Add your settings content here */}
   </div>
 );
-
-const DefaultContent = () => <MockupDashboard />;
 
 export default Dashboard;

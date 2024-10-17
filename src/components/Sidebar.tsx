@@ -1,12 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
-import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-} from "@tabler/icons-react";
+import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -33,12 +28,6 @@ export function MySidebar({
 
   const links = [
     {
-      label: "Dashboard",
-      href: "#",
-      icon: <IconBrandTabler className="text-white h-5 w-5 flex-shrink-0" />,
-      onClick: () => handleMenuItemClick("dashboard"),
-    },
-    {
       label: "Profile",
       href: "#",
       icon: <IconUserBolt className="text-white h-5 w-5 flex-shrink-0" />,
@@ -57,7 +46,9 @@ export function MySidebar({
       onClick: () => handleMenuItemClick("logout"),
     },
   ];
+
   const [open, setOpen] = useState(false);
+
   return (
     <div
       className={cn(
@@ -68,7 +59,23 @@ export function MySidebar({
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            {open ? <Logo /> : <LogoIcon />}
+            {/* Use the logo as a clickable "Feed" link */}
+            <Link
+              href="#"
+              onClick={() => handleMenuItemClick("feed")}
+              className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
+            >
+              <div className="h-5 w-6 bg-blue-700 dark:bg-blue-400 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+              {open && (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="font-medium text-white whitespace-pre"
+                >
+                  Feed
+                </motion.span>
+              )}
+            </Link>
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
                 <SidebarLink key={idx} link={link} onClick={link.onClick} />
@@ -97,32 +104,3 @@ export function MySidebar({
     </div>
   );
 }
-
-export const Logo = () => {
-  return (
-    <Link
-      href="#"
-      className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
-    >
-      <div className="h-5 w-6 bg-blue-700 dark:bg-blue-400 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="font-medium text-white whitespace-pre"
-      >
-        Feed
-      </motion.span>
-    </Link>
-  );
-};
-
-export const LogoIcon = () => {
-  return (
-    <Link
-      href="#"
-      className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
-    >
-      <div className="h-5 w-6 bg-blue-700 dark:bg-blue-400 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-    </Link>
-  );
-};
