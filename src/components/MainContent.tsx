@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { MySidebar } from "@/components/Sidebar";
 import Dashboard from "@/components/Dashboard";
 import MyNavbar from "@/components/Navbar";
-import { createClient } from "../../supabase/client";
+import { createClient } from "../../utils/supabase/client";
 import { PostProps } from "../../types";
 
 export default function MainContent({ posts }: { posts: PostProps[] }) {
