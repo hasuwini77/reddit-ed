@@ -1,13 +1,11 @@
 import HomeFeed from "@/components/HomeFeed";
-import { HomePostsType } from "../../utils/supabase/queries";
-import { createClient } from "../../utils/supabase/client";
+import { getHomePosts, HomePostsType } from "../../utils/supabase/queries";
 
 export default async function Home() {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("posts").select("*");
+  const { data, error } = await getHomePosts();
 
   if (error) {
-    console.error("Error fetching posts:", error);
+    console.error("Error fetching posts:", error.message);
     return <div>Error loading posts.</div>;
   }
 
