@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { HomePostsType } from "../../utils/supabase/queries";
 
-type SinglePostType = HomePostsType[number];
+type SinglePostType = Omit<HomePostsType[number], "id">;
 
 export function FeedPost({ title, slug, content, users }: SinglePostType) {
   return (

@@ -8,6 +8,5 @@ export const getHomePosts = () => {
       .select("id, title, slug, content, user_id, users(email)")
       .order("created_at", { ascending: false });
 }
-
   
   export type HomePostsType = QueryData<ReturnType<typeof getHomePosts>>;

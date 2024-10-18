@@ -20,7 +20,6 @@ export default function HomeFeed({ posts }: HomeFeedProps) {
           users={post.users}
           user_id={post.user_id}
           slug={post.slug}
-          id={post.id}
         />
       ))}
     </div>
