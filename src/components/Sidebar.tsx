@@ -1,53 +1,34 @@
 "use client";
 import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
+import { Sidebar, SidebarBody } from "./ui/sidebar";
 import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
-interface MySidebarProps {
-  showPostForm: boolean;
-  onPostSubmit: (postData: {
-    title: string;
-    image: string;
-    content: string;
-  }) => void;
-  onPageSelect: (page: string) => void;
-}
-
-export function MySidebar({
-  showPostForm,
-  onPostSubmit,
-  onPageSelect,
-}: MySidebarProps) {
-  const handleMenuItemClick = (page: string) => {
-    onPageSelect(page);
-  };
+export function MySidebar() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   const links = [
     {
       label: "Profile",
-      href: "#",
+      href: "/profile",
       icon: <IconUserBolt className="text-white h-5 w-5 flex-shrink-0" />,
-      onClick: () => handleMenuItemClick("profile"),
     },
     {
       label: "Settings",
-      href: "#",
+      href: "/configure",
       icon: <IconSettings className="text-white h-5 w-5 flex-shrink-0" />,
-      onClick: () => handleMenuItemClick("settings"),
     },
     {
       label: "Logout",
-      href: "#",
+      href: "/logout",
       icon: <IconArrowLeft className="text-white h-5 w-5 flex-shrink-0" />,
-      onClick: () => handleMenuItemClick("logout"),
     },
   ];
-
-  const [open, setOpen] = useState(false);
 
   return (
     <div
@@ -59,11 +40,12 @@ export function MySidebar({
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            {/* Use the logo as a clickable "Feed" link */}
             <Link
-              href="#"
-              onClick={() => handleMenuItemClick("feed")}
-              className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
+              href="/feed"
+              className={cn(
+                "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
+                pathname === "/feed" && "font-bold"
+              )}
             >
               <div className="h-5 w-6 bg-blue-700 dark:bg-blue-400 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
               {open && (
@@ -78,26 +60,50 @@ export function MySidebar({
             </Link>
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} onClick={link.onClick} />
+                <Link
+                  key={idx}
+                  href={link.href}
+                  className={cn(
+                    "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
+                    pathname === link.href && "font-bold"
+                  )}
+                >
+                  {link.icon}
+                  {open && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="font-medium text-white whitespace-pre"
+                    >
+                      {link.label}
+                    </motion.span>
+                  )}
+                </Link>
               ))}
             </div>
           </div>
           <div>
-            <SidebarLink
-              link={{
-                label: "Manu Arora",
-                href: "#",
-                icon: (
-                  <Image
-                    src="https://assets.aceternity.com/manu.png"
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
-                  />
-                ),
-              }}
-            />
+            <Link
+              href="/profile"
+              className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
+            >
+              <Image
+                src="https://assets.aceternity.com/manu.png"
+                className="h-7 w-7 flex-shrink-0 rounded-full"
+                width={50}
+                height={50}
+                alt="Avatar"
+              />
+              {open && (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="font-medium text-white whitespace-pre"
+                >
+                  Manu Arora
+                </motion.span>
+              )}
+            </Link>
           </div>
         </SidebarBody>
       </Sidebar>

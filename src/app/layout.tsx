@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { MySidebar } from "@/components/Sidebar";
+import MyNavbar from "@/components/Navbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -43,7 +45,17 @@ export default function RootLayout({
       <body
         className={`dark ${redditSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="font-sans">
+          <MyNavbar />
+          <div className="flex flex-grow">
+            <MySidebar />
+            <div className="flex-1 min-w-0">
+              <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-700 dark:border-neutral-600 bg-white dark:bg-gray-900 flex flex-col gap-2 flex-1 w-full h-full">
+                <main>{children}</main>
+              </div>
+            </div>
+          </div>
+        </div>
       </body>
     </html>
   );

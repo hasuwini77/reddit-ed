@@ -1,5 +1,5 @@
+import { HomePostsType } from "../../utils/supabase/queries";
 import { FeedPost } from "./FeedPost";
-import { type HomePostsType } from "../../utils/supabase/queries";
 
 interface HomeFeedProps {
   posts: HomePostsType;
@@ -11,7 +11,7 @@ export default function HomeFeed({ posts }: HomeFeedProps) {
   }
 
   return (
-    <div>
+    <div className="space-y-4">
       {posts.map((post) => (
         <FeedPost
           key={post.id}

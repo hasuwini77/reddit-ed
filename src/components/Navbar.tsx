@@ -8,19 +8,18 @@ import {
 import Image from "next/image";
 import { SearchIcon } from "./SearchIcon";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 
-interface NavbarProps {
-  onCreatePostClick: () => void;
-}
-
-export default function MyNavbar({ onCreatePostClick }: NavbarProps) {
+export default function MyNavbar() {
   return (
     <div className="py-3">
       <Navbar isBordered>
         {/* Left side: Brand and Links */}
         <NavbarContent justify="start" className="flex items-center mx-2">
           <NavbarBrand className="mr-4 flex items-center">
-            <Image src={"/eddriT.png"} alt="mylogo" width={70} height={70} />
+            <Link href="/feed">
+              <Image src={"/eddriT.png"} alt="mylogo" width={70} height={70} />
+            </Link>
             <p className="hidden sm:block font-bold font-sans text-2xl ml-2">
               eddriT
             </p>
@@ -45,14 +44,15 @@ export default function MyNavbar({ onCreatePostClick }: NavbarProps) {
         {/* Right side: Avatar and Create Post Button */}
         <NavbarContent justify="end" className="flex items-center gap-4 mx-3">
           {/* Button for creating post */}
-          <Button
-            color="primary"
-            className="flex items-center gap-2 rounded-lg border-2"
-            onClick={onCreatePostClick}
-          >
-            <PlusIcon className="h-5 w-5" />
-            Create Post
-          </Button>
+          <Link href="/create-post">
+            <Button
+              color="primary"
+              className="flex items-center gap-2 rounded-lg border-2"
+            >
+              <PlusIcon className="h-5 w-5" />
+              Create Post
+            </Button>
+          </Link>
           <div className="flex items-center">
             <Image
               src="https://i.pravatar.cc/150?u=a042581f4e29026704d"

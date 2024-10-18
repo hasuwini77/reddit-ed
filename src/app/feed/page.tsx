@@ -1,8 +1,8 @@
 import HomeFeed from "@/components/HomeFeed";
-import { HomePostsType } from "../../utils/supabase/queries";
-import { createClient } from "../../utils/supabase/client";
+import { HomePostsType } from "../../../utils/supabase/queries";
+import { createClient } from "../../../utils/supabase/client";
 
-export default async function Home() {
+export default async function FeedPage() {
   const supabase = createClient();
   const { data, error } = await supabase.from("posts").select("*");
 
