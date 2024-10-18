@@ -2,7 +2,7 @@ import React from "react";
 import PostForm from "./PostForm";
 import MockupDashboard from "./MockupDashboard";
 import HomeFeed from "./HomeFeed";
-import { PostProps } from "../../types";
+import { HomePostsType } from "../../utils/supabase/queries";
 
 interface DashboardProps {
   showPostForm: boolean;
@@ -12,7 +12,7 @@ interface DashboardProps {
     image: string;
     content: string;
   }) => void;
-  posts: PostProps[];
+  posts: HomePostsType;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({

@@ -1,25 +1,20 @@
+// page.tsx
 import MainContent from "@/components/MainContent";
-import { createClient } from "../../utils/supabase/client";
-import { Database } from "../../utils/supabase/database.types";
-import { PostProps } from "../../types";
-import { getHomePosts } from "../../utils/supabase/queries";
-
-// Define the type for the fetched posts
-type SupabasePost = Database["public"]["Tables"]["posts"]["Row"] & {
-  users?: { email: string | null }; // Adding users relationship if needed
-};
+import { getHomePosts, type HomePostsType } from "../../utils/supabase/queries";
 
 export default async function Home() {
   const { data, error } = await getHomePosts();
 
-  // Type assertion for the fetched data
-  const posts: PostProps[] = (data as SupabasePost[]).map((post) => ({
-    id: parseInt(post.id), // Convert to number if needed
-    title: post.title,
-    image: post.slug,
-    content: post.content || "",
-    comments: post.users?.email || "",
-  }));
+  // Use a type assertion to let TypeScript know the expected shape
+  const posts: HomePostsType = data || [];
 
-  return <MainContent posts={posts} />;
+  return (
+    <>
+      {error || !posts || posts.length === 0 ? (
+        <div> no post found! </div>
+      ) : (
+        <MainContent posts={posts} showPostForm={false} selectedPage={"feed"} /> // Pass the asserted posts
+      )}
+    </>
+  );
 }

@@ -1,9 +1,8 @@
-import { createClient } from "../../utils/supabase/client";
 import { FeedPost } from "./FeedPost";
-import { PostProps } from "../../types";
+import { type HomePostsType } from "../../utils/supabase/queries";
 
 interface HomeFeedProps {
-  posts: PostProps[];
+  posts: HomePostsType;
 }
 
 export default function HomeFeed({ posts }: HomeFeedProps) {
@@ -17,10 +16,11 @@ export default function HomeFeed({ posts }: HomeFeedProps) {
         <FeedPost
           key={post.id}
           title={post.title}
-          image={""}
           content={post.content}
-          comments={post.comments}
-          id={0}
+          users={post.users}
+          user_id={post.user_id}
+          slug={post.slug}
+          id={post.id}
         />
       ))}
     </div>

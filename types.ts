@@ -13,3 +13,15 @@ export interface PostProps {
       content: string;
     }) => void;
   }
+
+  export type PostType = {
+    comments: string | number;
+    id: number;
+    title: string;
+    slug: string;
+    content: string;
+    user_id: string;
+    users: {
+      email: string;
+    };
+  };
