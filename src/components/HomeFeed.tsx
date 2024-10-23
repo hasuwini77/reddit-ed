@@ -2,17 +2,17 @@ import { HomePostsType } from "../../utils/supabase/queries";
 import { FeedPost } from "./FeedPost";
 
 interface HomeFeedProps {
-  posts: HomePostsType;
+  initialPosts: HomePostsType;
 }
 
-export default function HomeFeed({ posts }: HomeFeedProps) {
-  if (!posts || posts.length === 0) {
+export default function HomeFeed({ initialPosts }: HomeFeedProps) {
+  if (!initialPosts || initialPosts.length === 0) {
     return <div>No posts available.</div>;
   }
 
   return (
     <div className="space-y-4">
-      {posts.map((post) => (
+      {initialPosts.map((post) => (
         <FeedPost
           key={post.id}
           title={post.title}

@@ -11,5 +11,5 @@ export default async function Home() {
 
   const posts: HomePostsType = data || [];
 
-  return <HomeFeed posts={posts} />;
+  return <HomeFeed initialPosts={posts} />;
 }
