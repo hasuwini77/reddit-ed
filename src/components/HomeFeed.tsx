@@ -16,6 +16,8 @@ export default function HomeFeed({ initialPosts }: HomeFeedProps) {
       return data;
     },
     initialData: initialPosts,
+    refetchOnMount: false,
+    staleTime: 10000,
   });
 
   if (!initialPosts || initialPosts.length === 0) {
