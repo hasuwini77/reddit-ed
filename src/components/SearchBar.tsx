@@ -1,3 +1,5 @@
+"use client";
+import { getPostByQuery } from "../../utils/supabase/queries";
 import { SearchIcon } from "./SearchIcon";
 
 export const SearchBar = () => (
@@ -6,6 +8,11 @@ export const SearchBar = () => (
       type="search"
       placeholder="Search Reddit..."
       className="w-full h-12 rounded-full bg-gray-700 text-white placeholder-gray-400 border border-gray-200 focus:border-yellow-300 focus:ring focus:ring-yellow-100 focus:ring-opacity-10 focus:outline-none transition duration-300 ease-in-out pl-10 pr-4"
+      onChange={async (e) => {
+        const { data } = await getPostByQuery(e.target.value);
+        console.log(data);
+        // Perform search logic here
+      }}
     />
     <SearchIcon
       className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"

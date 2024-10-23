@@ -16,5 +16,5 @@ export const getPostByQuery = (query: string) => {
   return supabase
     .from("posts")
     .select("id, title, slug")
-    .textSearch("title", query);
+    .textSearch("title", query.replace(/ /g, "+"));
 };
