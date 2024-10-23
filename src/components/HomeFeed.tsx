@@ -1,4 +1,6 @@
-import { HomePostsType } from "../../utils/supabase/queries";
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import { getHomePosts, HomePostsType } from "../../utils/supabase/queries";
 import { FeedPost } from "./FeedPost";
 
 interface HomeFeedProps {
@@ -6,13 +8,23 @@ interface HomeFeedProps {
 }
 
 export default function HomeFeed({ initialPosts }: HomeFeedProps) {
+  const { data: posts } = useQuery<HomePostsType>({
+    queryKey: ["home-posts"],
+    queryFn: async () => {
+      const { data, error } = await getHomePosts();
+      if (error) throw error;
+      return data;
+    },
+    initialData: initialPosts,
+  });
+
   if (!initialPosts || initialPosts.length === 0) {
-    return <div>No posts available.</div>;
+    throw new Error("No initial posts available");
   }
 
   return (
     <div className="space-y-4">
-      {initialPosts.map((post) => (
+      {posts.map((post) => (
         <FeedPost
           key={post.id}
           title={post.title}
