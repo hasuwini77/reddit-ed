@@ -18,6 +18,7 @@ export default function HomeFeed({ initialPosts }: HomeFeedProps) {
     initialData: initialPosts,
     refetchOnMount: false,
     staleTime: 10000,
+    refetchOnWindowFocus: true,
   });
 
   if (!initialPosts || initialPosts.length === 0) {

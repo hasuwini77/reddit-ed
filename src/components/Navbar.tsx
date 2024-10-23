@@ -9,6 +9,7 @@ import Image from "next/image";
 import { SearchIcon } from "./SearchIcon";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { SearchBar } from "./SearchBar";
 
 export default function MyNavbar() {
   return (
@@ -28,17 +29,7 @@ export default function MyNavbar() {
 
         {/* Center: Simple Search Bar */}
         <NavbarContent className="flex-grow flex items-center justify-center">
-          <div className="relative w-full max-w-xl">
-            <input
-              type="search"
-              placeholder="Search Reddit..."
-              className="w-full h-12 rounded-full bg-gray-700 text-white placeholder-gray-400 border border-gray-200 focus:border-yellow-300 focus:ring focus:ring-yellow-100 focus:ring-opacity-10 focus:outline-none transition duration-300 ease-in-out pl-10 pr-4"
-            />
-            <SearchIcon
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-          </div>
+          <SearchBar />
         </NavbarContent>
 
         {/* Right side: Avatar and Create Post Button */}
