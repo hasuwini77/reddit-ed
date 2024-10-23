@@ -6,7 +6,6 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import Image from "next/image";
-import { SearchIcon } from "./SearchIcon";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { SearchBar } from "./SearchBar";
