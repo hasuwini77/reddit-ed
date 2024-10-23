@@ -15,16 +15,16 @@ export default function MyNavbar() {
     <div className="py-3">
       <Navbar isBordered>
         {/* Left side: Brand and Links */}
-        <NavbarContent justify="start" className="flex items-center mx-2">
-          <NavbarBrand className="mr-4 flex items-center">
-            <Link href="/feed">
+        <Link href="/feed">
+          <NavbarContent justify="start" className="flex items-center mx-2">
+            <NavbarBrand className="mr-4 flex items-center">
               <Image src={"/eddriT.png"} alt="mylogo" width={70} height={70} />
-            </Link>
-            <p className="hidden sm:block font-bold font-sans text-2xl ml-2">
-              eddriT
-            </p>
-          </NavbarBrand>
-        </NavbarContent>
+              <p className="hidden sm:block font-bold font-sans text-2xl ml-2">
+                eddriT
+              </p>
+            </NavbarBrand>
+          </NavbarContent>
+        </Link>
 
         {/* Center: Simple Search Bar */}
         <NavbarContent className="flex-grow flex items-center justify-center">
