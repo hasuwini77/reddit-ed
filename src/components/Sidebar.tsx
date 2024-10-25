@@ -41,10 +41,10 @@ export function MySidebar() {
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <Link
-              href="/feed"
+              href="/"
               className={cn(
                 "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
-                pathname === "/feed" && "font-bold"
+                pathname === "/" && "font-bold"
               )}
             >
               <div className="h-5 w-6 bg-blue-700 dark:bg-blue-400 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
