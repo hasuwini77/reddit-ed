@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getHomePosts, HomePostsType } from "../../utils/supabase/queries";
 import { FeedPost } from "./FeedPost";
+import { createClient } from "../../utils/supabase/client";
 
 interface HomeFeedProps {
   initialPosts: HomePostsType;
@@ -11,7 +12,8 @@ export default function HomeFeed({ initialPosts }: HomeFeedProps) {
   const { data: posts } = useQuery<HomePostsType>({
     queryKey: ["home-posts"],
     queryFn: async () => {
-      const { data, error } = await getHomePosts();
+      const supabase = createClient(); // importing createClient from client
+      const { data, error } = await getHomePosts(supabase);
       if (error) throw error;
       return data;
     },
