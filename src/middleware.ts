@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const middleware = async (request: NextRequest) => {
   let supabaseResponse = NextResponse.next({ request });
-  console.log("hello from Middleware", request.nextUrl);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

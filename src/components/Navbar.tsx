@@ -37,7 +37,7 @@ export default function MyNavbar() {
           <Link href="/create-post">
             <Button
               color="primary"
-              className="flex items-center gap-2 rounded-lg border-2"
+              className="flex items-center gap-2 rounded-lg border-2 bg-slate-800"
             >
               <PlusIcon className="h-5 w-5" />
               Create Post
