@@ -1,7 +1,8 @@
-import HomeFeed from "@/components/HomeFeed";
 import { getHomePosts, HomePostsType } from "../../utils/supabase/queries";
 import { createClient } from "../../utils/supabase/server";
-createClient;
+import { FeedPost } from "@/components/FeedPost";
+
+export const revalidate = 60 * 15; // 15 minutes
 
 export default async function Home() {
   const supabase = createClient();
@@ -14,5 +15,18 @@ export default async function Home() {
 
   const posts: HomePostsType = data || [];
 
-  return <HomeFeed initialPosts={posts} />;
+  return (
+    <div className="space-y-4">
+      {posts.map((post) => (
+        <FeedPost
+          key={post.id}
+          title={post.title}
+          content={post.content}
+          users={post.users}
+          user_id={post.user_id}
+          slug={post.slug}
+        />
+      ))}
+    </div>
+  );
 }

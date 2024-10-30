@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { PostProps } from "../../types";
+import { PostProps } from "../../types/types";
 
 export function DetailedPost({ title, image, content, comments }: PostProps) {
   return (

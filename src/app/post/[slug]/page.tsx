@@ -33,7 +33,7 @@ export default async function PostPage({
       </span>
       <h1 className="mb-4 text-2xl font-bold">{post.title}</h1>
       <p>{post.content}</p>
-      {isAuthor && <DeletePostButton />}
+      {isAuthor && <DeletePostButton postId={post.id} />}
     </main>
   );
 }
