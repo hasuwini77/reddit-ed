@@ -1,16 +1,12 @@
 "use server";
 
+import { z } from "zod";
 import { createClient } from "../../utils/supabase/server";
 import { redirect } from "next/navigation";
 import { logInSchema } from "./schemas";
 
-export const logIn = async (formaData: FormData) => {
+export const logIn = async (data: z.infer<typeof logInSchema>) => {
   const supabase = createClient();
-
-  const data = {
-    email: formaData.get("email"),
-    password: formaData.get("password"),
-  };
 
   const parsedData = logInSchema.parse(data);
 
