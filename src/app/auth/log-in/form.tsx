@@ -7,7 +7,9 @@ export const LogInForm = () => {
     <form action={logIn} className="flex w-full max-w-md flex-col gap-4">
       <Input type="email" name="email" placeholder="email" required />
       <Input type="password" name="password" placeholder="password" required />
-      <Button type="submit">log in</Button>
+      <Button className="bg-slate-800" type="submit">
+        log in
+      </Button>
     </form>
   );
 };

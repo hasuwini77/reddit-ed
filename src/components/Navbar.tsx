@@ -1,16 +1,18 @@
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  Button,
-  Avatar,
-} from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
 import Image from "next/image";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { SearchBar } from "./SearchBar";
+import { createClient } from "../../utils/supabase/server";
+import { Button } from "./ui/button";
+import { LogOutButton } from "./ui/logout-button";
 
-export default function MyNavbar() {
+export default async function MyNavbar() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <div className="py-3">
       <Navbar isBordered>
@@ -34,24 +36,24 @@ export default function MyNavbar() {
         {/* Right side: Avatar and Create Post Button */}
         <NavbarContent justify="end" className="flex items-center gap-4 mx-3">
           {/* Button for creating post */}
-          <Link href="/create-post">
-            <Button
-              color="primary"
-              className="flex items-center gap-2 rounded-lg border-2 bg-slate-800"
-            >
-              <PlusIcon className="h-5 w-5" />
-              Create Post
+
+          {user ? (
+            <>
+              <Button
+                as={Link}
+                href="/create-post"
+                className="flex items-center gap-2 rounded-lg border-2 bg-slate-800"
+              >
+                <PlusIcon className="h-5 w-5" />
+                Create Post
+              </Button>
+              <LogOutButton />
+            </>
+          ) : (
+            <Button as={Link} href="/auth/log-in" className="bg-green-500">
+              log in
             </Button>
-          </Link>
-          <div className="flex items-center">
-            <Image
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-              alt="mylogo"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          </div>
+          )}
         </NavbarContent>
       </Navbar>
     </div>
