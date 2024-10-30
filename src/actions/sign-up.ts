@@ -20,7 +20,7 @@ export const signUp = async (formData: FormData) => {
     await supabase.from("users").insert([
       {
         id: user.id,
-        email: data.email,
+        email: user.email,
         username: data.username,
         avatar: data.avatar,
       },

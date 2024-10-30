@@ -4,26 +4,43 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { logInSchema } from "@/actions/schemas";
 
+import { z } from "zod";
 import { logIn } from "@/actions/log-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
 
 export const LogInForm = () => {
-  const { register, handleSubmit } = useForm<z.infer<typeof logInSchema>>({
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: logIn,
+  });
+
+  console.log({ error });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof logInSchema>>({
     resolver: zodResolver(logInSchema),
+    mode: "onBlur",
   });
 
   return (
     <form
-      onSubmit={handleSubmit((values) => logIn(values))}
+      onSubmit={handleSubmit((values) => mutate(values))}
       className="flex w-full max-w-md flex-col gap-4"
     >
-      <Input {...register("email")} />
-      <Input {...register("password")} type="password" />
+      <Input {...register("email")} error={errors.email} />
+      <Input
+        {...register("password")}
+        type="password"
+        error={errors.password}
+      />
       <Button className="bg-slate-800" type="submit">
-        log in
+        {isPending ? "logging in..." : "log in"}
       </Button>
+      {error && <p className="text-red-500 p-1">{error.message}</p>}
     </form>
   );
 };
