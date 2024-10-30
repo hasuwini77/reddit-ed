@@ -7,12 +7,12 @@ import { logInSchema } from "@/actions/schemas";
 import { logIn } from "@/actions/log-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { z } from "zod";
 
 export const LogInForm = () => {
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<z.infer<typeof logInSchema>>({
     resolver: zodResolver(logInSchema),
   });
-  const onSubmit = (data: any) => console.log(data);
 
   return (
     <form
