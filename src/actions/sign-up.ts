@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { createClient } from "../../utils/supabase/server";
 import { signUpSchema } from "./schemas";
+import { redirect } from "next/navigation";
 
 export const signUp = async (data: z.infer<typeof signUpSchema>) => {
   // Validate data using Zod schema
@@ -44,6 +45,7 @@ export const signUp = async (data: z.infer<typeof signUpSchema>) => {
 
     return { success: true, user };
   }
+  redirect("/");
 
   return { error: "Failed to create user" };
 };
