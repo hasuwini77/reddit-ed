@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
@@ -27,21 +28,19 @@ export const SignUpForm = () => {
 
   const mutation = useMutation({
     mutationFn: signUp,
-    onSuccess: (data) => {
-      if ("error" in data) {
-        setErrorMsg(
-          typeof data.error === "string"
-            ? data.error
-            : "Sign-up failed. Please check your information and try again."
-        );
-      } else {
-        // Handle successful sign-up (e.g., redirect to dashboard)
-        console.log("User signed up:", data.user);
-      }
-    },
-    onError: (error) => {
-      setErrorMsg("An unexpected error occurred. Please try again.");
-    },
+    // onSuccess: (data) => {
+    //   if ("error" in data) {
+    //     setErrorMsg(
+    //       typeof data.error === "string"
+    //         ? data.error
+    //         : "Sign-up failed. Please check your information and try again."
+    //     );
+    //   }
+    // },
+    onSuccess: () =>
+      toast.success("User successfully Created", { richColors: true }),
+    onError: (error) => toast.error(error.message),
+    onSettled: () => toast.dismiss(),
   });
 
   const onSubmit = (data: SignUpFormData) => {

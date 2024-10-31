@@ -43,9 +43,9 @@ export const signUp = async (data: z.infer<typeof signUpSchema>) => {
       return { error: "Failed to create user profile" };
     }
 
-    return { success: true, user };
+    // Successful sign-up, redirect to home page
+    redirect("/");
   }
-  redirect("/");
 
   return { error: "Failed to create user" };
 };
