@@ -34,12 +34,26 @@ export const createPost = async (data: z.infer<typeof createPostSchema>) => {
     console.error("User retrieval error:", userError);
     throw new Error("Error retrieving user data");
   }
-  if (!user) {
-    console.error("User not authenticated or session not found");
-    throw new Error("You must be logged in to create a post");
+  if (!user || !user.email) {
+    console.error("User not authenticated or email not found");
+    throw new Error(
+      "You must be logged in with a valid email to create a post"
+    );
   }
 
-  console.log("Authenticated user:", user);
+  // Fetch the user's ID from the users table
+  const { data: userData, error: userDataError } = await supabase
+    .from("users")
+    .select("id")
+    .eq("email", user.email)
+    .single();
+
+  if (userDataError || !userData) {
+    console.error("Error fetching user data:", userDataError);
+    throw new Error("Failed to retrieve user information");
+  }
+
+  console.log("User data from users table:", userData);
 
   // Insert new post into the database
   const { error: postError } = await supabase
@@ -47,13 +61,13 @@ export const createPost = async (data: z.infer<typeof createPostSchema>) => {
     .insert({
       ...validatedData,
       slug: uniqueSlug,
-      user_id: user.id,
+      user_id: userData.id,
     })
     .throwOnError();
 
   if (postError) {
     console.error("Error inserting post:", postError);
-    throw new Error("Failed to create post due to foreign key constraint");
+    throw new Error("Failed to create post");
   }
 
   console.log("Post created successfully");
