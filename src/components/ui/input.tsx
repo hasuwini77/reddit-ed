@@ -6,7 +6,7 @@ import { FieldError } from "react-hook-form";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  error?: FieldError;
+  error?: FieldError | string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -17,7 +17,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     let mouseX = useMotionValue(0);
     let mouseY = useMotionValue(0);
 
-    function handleMouseMove({ currentTarget, clientX, clientY }: any) {
+    function handleMouseMove({
+      currentTarget,
+      clientX,
+      clientY,
+    }: React.MouseEvent<HTMLDivElement>) {
       let { left, top } = currentTarget.getBoundingClientRect();
 
       mouseX.set(clientX - left);
@@ -60,7 +64,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
         </motion.div>
-        {error && <span className="text-sm text-red-500">{error.message}</span>}
+        {error && (
+          <span className="text-sm text-red-500">
+            {typeof error === "string" ? error : error.message}
+          </span> // <-- closing span tag added here
+        )}
       </div>
     );
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { createPost } from "@/actions/create-post";
-import { createPostSchema } from "@/actions/schemas";
+import { postSchema } from "@/actions/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,8 +9,8 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 
 export default function CreatePostPage() {
-  const { register, handleSubmit } = useForm<z.infer<typeof createPostSchema>>({
-    resolver: zodResolver(createPostSchema),
+  const { register, handleSubmit } = useForm<z.infer<typeof postSchema>>({
+    resolver: zodResolver(postSchema),
     mode: "onBlur",
   });
 

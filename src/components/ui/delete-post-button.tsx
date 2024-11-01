@@ -16,10 +16,12 @@ export const DeletePostButton = ({ postId }: { postId: string }) => {
   });
 
   return (
-    <div className="py-3 p-2">
-      <Button variant={"secondary"} onClick={() => mutate()}>
-        Delete
-      </Button>
-    </div>
+    <Button
+      className="text-sm md:text-base bg-red-500 hover:bg-red-700 w-30 h-10  px-4 py-2 rounded-md"
+      variant="secondary"
+      onClick={() => mutate()}
+    >
+      Delete
+    </Button>
   );
 };

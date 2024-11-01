@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "../../utils/supabase/server";
 import { redirect } from "next/navigation";
-import { createPostSchema } from "./schemas";
+import { postSchema } from "./schemas";
 import { z } from "zod";
 import { slugify } from "../../utils/slugify";
 
-export const createPost = async (data: z.infer<typeof createPostSchema>) => {
+export const createPost = async (data: z.infer<typeof postSchema>) => {
   // Validate the data
-  const validationResult = createPostSchema.safeParse(data);
+  const validationResult = postSchema.safeParse(data);
   if (!validationResult.success) {
     console.error("Validation error:", validationResult.error);
     throw new Error("Invalid input data");
