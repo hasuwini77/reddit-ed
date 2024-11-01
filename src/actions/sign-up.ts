@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createClient } from "../../utils/supabase/server";
 import { signUpSchema } from "./schemas";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export const signUp = async (data: z.infer<typeof signUpSchema>) => {
   // Validate data using Zod schema
@@ -44,6 +45,7 @@ export const signUp = async (data: z.infer<typeof signUpSchema>) => {
     }
 
     // Successful sign-up, redirect to home page
+    revalidatePath("/");
     redirect("/");
   }
 

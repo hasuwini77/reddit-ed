@@ -1,4 +1,6 @@
+// MySidebar.tsx
 "use client";
+
 import React, { useState } from "react";
 import { Sidebar, SidebarBody } from "./ui/sidebar";
 import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
@@ -7,10 +9,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
+import Spinner from "./Spinner";
 
 export function MySidebar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { data: user, isLoading } = useUser(); // Use the user hook here
 
   const links = [
     {
@@ -83,27 +88,35 @@ export function MySidebar() {
             </div>
           </div>
           <div>
-            <Link
-              href="/profile"
-              className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
-            >
-              <Image
-                src="https://assets.aceternity.com/manu.png"
-                className="h-7 w-7 flex-shrink-0 rounded-full"
-                width={50}
-                height={50}
-                alt="Avatar"
-              />
-              {open && (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="font-medium text-white whitespace-pre"
-                >
-                  Manu Arora
-                </motion.span>
-              )}
-            </Link>
+            {isLoading ? ( // Show spinner if loading
+              <Spinner />
+            ) : user ? ( // If user is logged in, show their avatar
+              <Link
+                href="/profile"
+                className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
+              >
+                <Image
+                  src={user.avatar || "https://i.pravatar.cc/300"}
+                  className="h-7 w-7 flex-shrink-0 rounded-full"
+                  width={50}
+                  height={50}
+                  alt="Avatar"
+                />
+                {open && (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="font-medium text-white whitespace-pre"
+                  >
+                    {user.username || "User"}
+                  </motion.span>
+                )}
+              </Link>
+            ) : (
+              <div className="font-normal text-sm text-white py-1 relative z-20">
+                Not logged in
+              </div>
+            )}
           </div>
         </SidebarBody>
       </Sidebar>
