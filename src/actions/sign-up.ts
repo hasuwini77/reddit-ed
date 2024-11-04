@@ -5,6 +5,7 @@ import { createClient } from "../../utils/supabase/server";
 import { signUpSchema } from "./schemas";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 export const signUp = async (data: z.infer<typeof signUpSchema>) => {
   // Validate data using Zod schema
@@ -45,6 +46,7 @@ export const signUp = async (data: z.infer<typeof signUpSchema>) => {
     }
 
     // Successful sign-up, redirect to home page
+    cookies().set("auth_changed", "true", { maxAge: 5, path: "/" });
     revalidatePath("/");
     redirect("/");
   }
