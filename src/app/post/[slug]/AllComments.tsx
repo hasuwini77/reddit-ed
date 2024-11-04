@@ -105,7 +105,7 @@ export default function AllComments({
                 onClick={() => handleDeleteComment(comment.id)}
                 variant="secondary"
                 className="bg-red-600 hover:bg-red-900 space-x-2 text-xs"
-                disabled={deletingCommentId === comment.id}
+                disabled={deletingCommentId === comment.id || isPending}
               >
                 {deletingCommentId === comment.id && isPending ? (
                   <>
