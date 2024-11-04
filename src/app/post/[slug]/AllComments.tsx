@@ -1,7 +1,11 @@
 "use client";
 
+import { deleteComment } from "@/actions/delete-comment";
 import { Button } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Comment = {
   id: string;
@@ -17,22 +21,45 @@ type Comment = {
 type AllCommentsProps = {
   comments: Comment[];
   currentUserId: string | undefined;
-};
-
-const handleEditComment = (commentId: string) => {
-  // Implement edit logic here
-  console.log("Edit comment:", commentId);
-};
-
-const handleDeleteComment = (commentId: string) => {
-  // Implement delete logic here
-  console.log("Delete comment:", commentId);
+  postSlug: string;
 };
 
 export default function AllComments({
   comments,
   currentUserId,
+  postSlug,
 }: AllCommentsProps) {
+  const router = useRouter();
+
+  const { mutate } = useMutation({
+    mutationFn: (commentId: string) => deleteComment(commentId, postSlug),
+    onError: (error: Error) => {
+      if (error.message === "You are not the author of this comment") {
+        toast.error("You can only delete your own comments.");
+      } else if (error.message === "Authentication error") {
+        toast.error("You must be logged in to delete a comment.");
+        router.push("/auth/log-in");
+      } else {
+        toast.error("Failed to delete comment. Please try again.");
+      }
+    },
+    onSuccess: () => {
+      toast.success("Comment deleted successfully", { richColors: true });
+      router.refresh();
+    },
+    onMutate: () => toast.loading("Deleting comment..."),
+    onSettled: () => toast.dismiss(),
+  });
+
+  const handleEditComment = (commentId: string) => {
+    // Implement edit logic here
+    console.log("Edit comment:", commentId);
+  };
+
+  const handleDeleteComment = (commentId: string) => {
+    mutate(commentId);
+  };
+
   return (
     <div className="mt-8 space-y-6">
       {comments.map((comment) => (

@@ -4,7 +4,6 @@ import { createClient } from "../../utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { createCommentSchema } from "@/actions/schemas";
 import { z } from "zod";
-import { redirect } from "next/dist/server/api-utils";
 
 export const createComment = async (
   input: z.infer<typeof createCommentSchema>

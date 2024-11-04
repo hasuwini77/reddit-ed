@@ -102,7 +102,11 @@ export default async function PostPage({
         <div className="mt-8 space-y-6">
           {comments.length > 0 ? (
             <>
-              <AllComments comments={comments} currentUserId={user?.id} />
+              <AllComments
+                comments={comments}
+                currentUserId={user?.id}
+                postSlug={params.slug}
+              />
             </>
           ) : (
             <p>No comments yet.</p>
