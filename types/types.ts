@@ -11,6 +11,7 @@ export interface PostType {
   content: string;
   user_id: string;
   users: {
+    username: string;
     email: string;
   };
   comments?: CommentType[];
@@ -36,6 +37,7 @@ export interface Comment {
   content: string;
   created_at: string;
   users: {
+    id: string;
     username: string;
     avatar: string | null;
   };

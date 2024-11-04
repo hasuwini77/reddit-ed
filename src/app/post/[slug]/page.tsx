@@ -58,6 +58,7 @@ export default async function PostPage({
       content: comment.content,
       created_at: comment.created_at,
       users: {
+        id: comment.users.id,
         username: comment.users.username,
         avatar: comment.users.avatar ?? null,
       },
@@ -101,7 +102,7 @@ export default async function PostPage({
         <div className="mt-8 space-y-6">
           {comments.length > 0 ? (
             <>
-              <AllComments comments={comments} />
+              <AllComments comments={comments} currentUserId={user?.id} />
             </>
           ) : (
             <p>No comments yet.</p>
