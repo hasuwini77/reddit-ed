@@ -1,11 +1,28 @@
+export interface UserType {
+  id: string;
+  username: string;
+  email: string;
+  avatar?: string | null;
+}
+export interface PostType {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  user_id: string;
+  users: {
+    email: string;
+  };
+  comments?: CommentType[];
+}
+
 export interface PostProps {
-  id: number;
+  id: string;
   title: string;
   image: string;
   content: string;
   comments: string | number;
 }
-
 export interface PostFormProps {
   onSubmit: (formData: {
     title: string;
@@ -14,21 +31,24 @@ export interface PostFormProps {
   }) => void;
 }
 
-export type PostType = {
-  comments: string | number;
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  user_id: string;
-  users: {
-    email: string;
-  };
-};
-
-// types/types.ts
-export type UserType = {
+export interface Comment {
   id: string;
-  username: string;
-  avatar: string | null;
-};
+  content: string;
+  created_at: string;
+  users: {
+    username: string;
+    avatar: string | null;
+  };
+}
+
+export interface CommentType {
+  id: string;
+  content: string;
+  created_at: string;
+  users: {
+    username: string;
+    id: string;
+    email: string;
+    avatar: string | null;
+  };
+}

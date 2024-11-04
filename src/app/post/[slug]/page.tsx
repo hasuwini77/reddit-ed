@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CommentArea } from "@/components/CommentArea";
+import { PostType, Comment } from "../../../../types/types";
+import AllComments from "./AllComments";
 
 export default async function PostPage({
   params,
@@ -11,17 +13,58 @@ export default async function PostPage({
   params: { slug: string };
 }) {
   const supabase = createClient();
-  const { data: post, error } = await supabase
+
+  // Fetch the post details
+  const { data: postData, error: postError } = await supabase
     .from("posts")
     .select("id, title, content, user_id, users(email)")
     .eq("slug", params.slug)
     .single();
 
-  if (!post || error) notFound();
+  const post = postData as PostType | null;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  if (!post || postError) {
+    notFound();
+  }
+
+  // Fetch comments with user data using a join
+  const { data: commentsData, error: commentsError } = await supabase
+    .from("comments")
+    .select(
+      `
+      id,
+      post_id,
+      content,
+      created_at,
+      users:user_id (
+        id,
+        username,
+        email,
+        avatar
+      )
+    `
+    )
+    .eq("post_id", post.id)
+    .order("created_at", { ascending: false });
+
+  if (commentsError) {
+    console.error("Error fetching comments:", commentsError);
+  }
+
+  // Map comments to ensure they conform to Comment type
+  const comments: Comment[] =
+    commentsData?.map((comment: any) => ({
+      id: comment.id,
+      content: comment.content,
+      created_at: comment.created_at,
+      users: {
+        username: comment.users.username, // Ensure this is a string
+        avatar: comment.users.avatar ?? null, // Ensure this is string | null
+      },
+    })) || []; // Fallback to an empty array if commentsData is null
+
+  const { data: authData } = await supabase.auth.getUser();
+  const user = authData?.user;
 
   const isAuthor = user?.id === post.user_id;
 
@@ -29,8 +72,9 @@ export default async function PostPage({
     <main className="container mx-auto px-4 py-8 md:px-8 lg:px-16">
       <div className="max-w-2xl mx-auto">
         <span className="mb-2 block text-sm text-gray-500">
-          {post.users?.email || "anonymous"}
+          {post.users?.email || "Anonymous"}
         </span>
+
         <h1 className="mb-6 text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900 dark:text-white">
           {post.title}
         </h1>
@@ -51,8 +95,18 @@ export default async function PostPage({
           </div>
         )}
       </div>
-      <div>
-        <CommentArea />
+
+      <div className="max-w-2xl mx-auto mt-12">
+        <h2 className="text-2xl font-bold mb-4">Comments</h2>
+        <CommentArea postId={post.id} />
+
+        <div className="mt-8 space-y-6">
+          {comments.length > 0 ? (
+            <AllComments comments={comments} />
+          ) : (
+            <p>No comments yet.</p>
+          )}
+        </div>
       </div>
     </main>
   );

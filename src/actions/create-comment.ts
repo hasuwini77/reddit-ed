@@ -1,68 +1,48 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "../../utils/supabase/server";
-import { z } from "zod";
-import { commentSchema } from "./schemas";
+import { commentSchema } from "@/actions/schemas";
 
-export const postComment = async (data: z.infer<typeof commentSchema>) => {
-  // Validate the data
-  const validationResult = commentSchema.safeParse(data);
-  if (!validationResult.success) {
-    console.error("Validation error:", validationResult.error);
-    throw new Error("Invalid input data");
-  }
-  const validatedData = validationResult.data;
-
-  // Initialize Supabase client
+export const postComment = async ({
+  content,
+  postId,
+}: {
+  content: string;
+  postId: string;
+}) => {
   const supabase = createClient();
+  const validatedData = commentSchema.parse({ content });
 
-  // Retrieve authenticated user data
+  // Get the current user
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
+  if (userError) throw new Error("Not authenticated");
 
-  if (userError) {
-    console.error("User retrieval error:", userError);
-    throw new Error("Error retrieving user data");
-  }
-  if (!user || !user.email) {
-    console.error("User not authenticated or email not found");
-    throw new Error(
-      "You must be logged in with a valid email to post a comment"
-    );
-  }
-
-  // Fetch the user's ID from the users table
-  const { data: userData, error: userDataError } = await supabase
-    .from("users")
+  // Check if the post exists
+  const { data: post, error: postError } = await supabase
+    .from("posts")
     .select("id")
-    .eq("id", user.id)
+    .eq("id", postId)
     .single();
 
-  if (userDataError || !userData) {
-    console.error("Error fetching user data:", userDataError);
-    throw new Error("Failed to retrieve user information");
+  if (postError || !post) {
+    console.error("Post not found:", postError);
+    throw new Error("Invalid post ID");
   }
 
-  // Insert new comment into the database
-  const { error: commentError } = await supabase
-    .from("comments")
-    .insert({
-      content: validatedData.content,
-      post_id: validatedData.postId,
-      user_id: userData.id,
-    })
-    .throwOnError();
+  // Insert the comment
+  const { error } = await supabase.from("comments").insert({
+    content: validatedData.content,
+    post_id: postId,
+    user_id: user?.id,
+  });
 
-  if (commentError) {
-    console.error("Error inserting comment:", commentError);
-    throw new Error("Failed to post comment");
+  if (error) {
+    console.error("Error inserting comment:", error);
+    throw error;
   }
 
   console.log("Comment posted successfully");
-
-  // Revalidate the post page to show the new comment
-  revalidatePath(`/post/${validatedData.postId}`);
 };

@@ -18,16 +18,16 @@ export const CommentArea = ({ postId }: { postId: string }) => {
     resolver: zodResolver(commentSchema),
     defaultValues: {
       content: "",
-      postId: postId,
     },
     mode: "onBlur",
   });
 
   const onSubmit = async (data: z.infer<typeof commentSchema>) => {
+    console.log("Form submitted", { ...data, postId });
     setIsSubmitting(true);
     try {
-      await postComment(data);
-      reset(); // Clear the form after successful submission
+      await postComment({ content: data.content, postId });
+      reset();
     } catch (error) {
       console.error("Failed to post comment:", error);
     } finally {
@@ -45,7 +45,7 @@ export const CommentArea = ({ postId }: { postId: string }) => {
         <div className="flex justify-center">
           <textarea
             {...register("content")}
-            className="comment-textarea w-full md:w-3/4 lg:w-2/3 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[100px]"
+            className="comment-textarea w-full text-black md:w-3/4 lg:w-2/3 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[100px]"
             placeholder="Add a comment..."
           />
         </div>

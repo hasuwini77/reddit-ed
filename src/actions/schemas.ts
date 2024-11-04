@@ -21,8 +21,5 @@ export const postSchema = z.object({
 });
 
 export const commentSchema = z.object({
-  id: z.string(),
   content: z.string().min(1, "Comment cannot be empty"),
-  postId: z.string(),
-  userId: z.string(),
 });
