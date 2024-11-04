@@ -19,3 +19,9 @@ export const postSchema = z.object({
     .min(10, "content must be at least 10 characters")
     .optional(),
 });
+
+export const commentSchema = z.object({
+  content: z.string().min(1, "Comment cannot be empty"),
+  postId: z.string(),
+  userId: z.string(),
+});

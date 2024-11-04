@@ -3,6 +3,7 @@ import { createClient } from "../../../../utils/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { CommentArea } from "@/components/CommentArea";
 
 export default async function PostPage({
   params,
@@ -49,6 +50,9 @@ export default async function PostPage({
             <DeletePostButton postId={post.id} />
           </div>
         )}
+      </div>
+      <div>
+        <CommentArea />
       </div>
     </main>
   );
