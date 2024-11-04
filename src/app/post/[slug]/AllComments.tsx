@@ -6,6 +6,8 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 type Comment = {
   id: string;
@@ -30,9 +32,15 @@ export default function AllComments({
   postSlug,
 }: AllCommentsProps) {
   const router = useRouter();
+  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
+    null
+  );
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (commentId: string) => deleteComment(commentId, postSlug),
+    onMutate: (commentId) => {
+      setDeletingCommentId(commentId);
+    },
     onError: (error: Error) => {
       if (error.message === "You are not the author of this comment") {
         toast.error("You can only delete your own comments.");
@@ -42,13 +50,13 @@ export default function AllComments({
       } else {
         toast.error("Failed to delete comment. Please try again.");
       }
+      setDeletingCommentId(null);
     },
     onSuccess: () => {
       toast.success("Comment deleted successfully", { richColors: true });
       router.refresh();
+      setDeletingCommentId(null);
     },
-    onMutate: () => toast.loading("Deleting comment..."),
-    onSettled: () => toast.dismiss(),
   });
 
   const handleEditComment = (commentId: string) => {
@@ -97,8 +105,16 @@ export default function AllComments({
                 onClick={() => handleDeleteComment(comment.id)}
                 variant="secondary"
                 className="bg-red-600 hover:bg-red-900 space-x-2 text-xs"
+                disabled={deletingCommentId === comment.id}
               >
-                Delete
+                {deletingCommentId === comment.id && isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-2 w-2 animate-spin text-xs" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete"
+                )}
               </Button>
             </div>
           )}
