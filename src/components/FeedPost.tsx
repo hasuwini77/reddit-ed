@@ -11,7 +11,9 @@ export function FeedPost({ title, slug, content, users }: SinglePostType) {
         <h1 className="text-xl font-semibold">{title}</h1>
         <p className="text-gray-600 mt-2">{content?.substring(0, 150)}...</p>
         {users && (
-          <p className="text-sm text-gray-500 mt-2">Posted by: {users.email}</p>
+          <p className="text-sm text-gray-500 mt-2">
+            Posted by {users.username}
+          </p>
         )}
       </div>
       <div>

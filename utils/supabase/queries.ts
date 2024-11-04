@@ -4,7 +4,7 @@ import { createClient } from "./client";
 export const getHomePosts = (supabase: ReturnType<typeof createClient>) => {
   return supabase
     .from("posts")
-    .select("id, title, slug, content, user_id, users(email)")
+    .select("id, title, slug, content, user_id, users(username)")
     .order("created_at", { ascending: false });
 };
 

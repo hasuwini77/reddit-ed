@@ -17,7 +17,6 @@ type AllCommentsProps = {
 };
 
 export default function AllComments({ comments }: AllCommentsProps) {
-  console.log("Comments in AllComments:", comments);
   return (
     <div className="mt-8 space-y-6">
       {comments.map((comment) => (

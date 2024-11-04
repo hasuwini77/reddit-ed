@@ -17,7 +17,7 @@ export default async function PostPage({
   // Fetch the post details
   const { data: postData, error: postError } = await supabase
     .from("posts")
-    .select("id, title, content, user_id, users(email)")
+    .select("id, title, content, user_id, users(username)")
     .eq("slug", params.slug)
     .single();
 
@@ -72,7 +72,7 @@ export default async function PostPage({
     <main className="container mx-auto px-4 py-8 md:px-8 lg:px-16">
       <div className="max-w-2xl mx-auto">
         <span className="mb-2 block text-sm text-gray-500">
-          {post.users?.email || "Anonymous"}
+          {post.users?.username || "Anonymous"}
         </span>
 
         <h1 className="mb-6 text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900 dark:text-white">
