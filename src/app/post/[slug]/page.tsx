@@ -58,10 +58,10 @@ export default async function PostPage({
       content: comment.content,
       created_at: comment.created_at,
       users: {
-        username: comment.users.username, // Ensure this is a string
-        avatar: comment.users.avatar ?? null, // Ensure this is string | null
+        username: comment.users.username,
+        avatar: comment.users.avatar ?? null,
       },
-    })) || []; // Fallback to an empty array if commentsData is null
+    })) || [];
 
   const { data: authData } = await supabase.auth.getUser();
   const user = authData?.user;
@@ -98,15 +98,16 @@ export default async function PostPage({
 
       <div className="max-w-2xl mx-auto mt-12">
         <h2 className="text-2xl font-bold mb-4">Comments</h2>
-        <CommentArea postId={post.id} />
-
         <div className="mt-8 space-y-6">
           {comments.length > 0 ? (
-            <AllComments comments={comments} />
+            <>
+              <AllComments comments={comments} />
+            </>
           ) : (
             <p>No comments yet.</p>
           )}
         </div>
+        <CommentArea postId={post.id} />
       </div>
     </main>
   );

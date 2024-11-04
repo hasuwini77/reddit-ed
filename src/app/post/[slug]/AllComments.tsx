@@ -17,6 +17,7 @@ type AllCommentsProps = {
 };
 
 export default function AllComments({ comments }: AllCommentsProps) {
+  console.log("Comments in AllComments:", comments);
   return (
     <div className="mt-8 space-y-6">
       {comments.map((comment) => (
@@ -33,7 +34,7 @@ export default function AllComments({ comments }: AllCommentsProps) {
             ) : (
               <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
             )}
-            <span className="font-semibold">
+            <span className="font-semibold text-black">
               {comment.users.username || "Anonymous"}
             </span>
           </div>
