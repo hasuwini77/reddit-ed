@@ -1,17 +1,18 @@
 "use server";
 
 import { createClient } from "../../utils/supabase/server";
-import { commentSchema } from "@/actions/schemas";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { commentSchema, createCommentSchema } from "@/actions/schemas";
+import { z } from "zod";
 
-export const postComment = async ({
-  content,
-  postId,
-}: {
-  content: string;
-  postId: string;
-}) => {
+export const createComment = async (
+  input: z.infer<typeof createCommentSchema>
+) => {
   const supabase = createClient();
-  const validatedData = commentSchema.parse({ content });
+
+  // Validate the input data
+  const validatedData = createCommentSchema.parse(input);
 
   // Get the current user
   const {
@@ -20,22 +21,10 @@ export const postComment = async ({
   } = await supabase.auth.getUser();
   if (userError) throw new Error("Not authenticated");
 
-  // Check if the post exists
-  const { data: post, error: postError } = await supabase
-    .from("posts")
-    .select("id")
-    .eq("id", postId)
-    .single();
-
-  if (postError || !post) {
-    console.error("Post not found:", postError);
-    throw new Error("Invalid post ID");
-  }
-
   // Insert the comment
   const { error } = await supabase.from("comments").insert({
     content: validatedData.content,
-    post_id: postId,
+    post_id: validatedData.postId,
     user_id: user?.id,
   });
 
@@ -43,6 +32,5 @@ export const postComment = async ({
     console.error("Error inserting comment:", error);
     throw error;
   }
-
-  console.log("Comment posted successfully");
+  revalidatePath(`/post/${validatedData.postSlug}`);
 };

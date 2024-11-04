@@ -107,7 +107,7 @@ export default async function PostPage({
             <p>No comments yet.</p>
           )}
         </div>
-        <CommentArea postId={post.id} />
+        <CommentArea postId={post.id} postSlug={params.slug} />
       </div>
     </main>
   );

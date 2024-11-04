@@ -5,16 +5,26 @@ import { commentSchema } from "@/actions/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { postComment } from "@/actions/create-comment";
+import { createComment } from "@/actions/create-comment";
+import { useRouter } from "next/navigation";
 
-export const CommentArea = ({ postId }: { postId: string }) => {
+type CommentFormData = z.infer<typeof commentSchema>;
+
+export function CommentArea({
+  postId,
+  postSlug,
+}: {
+  postId: string;
+  postSlug: string;
+}) {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<z.infer<typeof commentSchema>>({
+  } = useForm<CommentFormData>({
     resolver: zodResolver(commentSchema),
     defaultValues: {
       content: "",
@@ -22,12 +32,13 @@ export const CommentArea = ({ postId }: { postId: string }) => {
     mode: "onBlur",
   });
 
-  const onSubmit = async (data: z.infer<typeof commentSchema>) => {
-    console.log("Form submitted", { ...data, postId });
+  const onSubmit = async (data: CommentFormData) => {
+    console.log("Form submitted", { ...data, postId, postSlug });
     setIsSubmitting(true);
     try {
-      await postComment({ content: data.content, postId });
+      await createComment({ content: data.content, postId, postSlug });
       reset();
+      router.refresh();
     } catch (error) {
       console.error("Failed to post comment:", error);
     } finally {
@@ -71,4 +82,4 @@ export const CommentArea = ({ postId }: { postId: string }) => {
       </form>
     </div>
   );
-};
+}

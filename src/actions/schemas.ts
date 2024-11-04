@@ -23,3 +23,9 @@ export const postSchema = z.object({
 export const commentSchema = z.object({
   content: z.string().min(1, "Comment cannot be empty"),
 });
+
+export const createCommentSchema = z.object({
+  content: commentSchema.shape.content,
+  postId: z.string(),
+  postSlug: z.string(),
+});
