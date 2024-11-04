@@ -1,13 +1,19 @@
 "use client";
 
 import { deleteComment } from "@/actions/delete-comment";
+import { editComment } from "@/actions/edit-comment";
+import { commentSchema } from "@/actions/schemas";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 type Comment = {
   id: string;
@@ -26,6 +32,10 @@ type AllCommentsProps = {
   postSlug: string;
 };
 
+interface EditCommentFormData {
+  content: string;
+}
+
 export default function AllComments({
   comments,
   currentUserId,
@@ -35,8 +45,13 @@ export default function AllComments({
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
     null
   );
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
 
-  const { mutate, isPending } = useMutation({
+  const { register, handleSubmit, reset } = useForm<EditCommentFormData>({
+    resolver: zodResolver(commentSchema),
+  });
+
+  const deleteMutation = useMutation({
     mutationFn: (commentId: string) => deleteComment(commentId, postSlug),
     onMutate: (commentId) => {
       setDeletingCommentId(commentId);
@@ -59,13 +74,37 @@ export default function AllComments({
     },
   });
 
-  const handleEditComment = (commentId: string) => {
-    // Implement edit logic here
-    console.log("Edit comment:", commentId);
-  };
+  const editMutation = useMutation({
+    mutationFn: ({
+      commentId,
+      content,
+    }: {
+      commentId: string;
+      content: string;
+    }) => editComment(commentId, postSlug, { content }),
+    onSuccess: () => {
+      toast.success("Comment edited successfully");
+      setEditingCommentId(null);
+      reset();
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error("Failed to edit comment");
+      console.error(error);
+    },
+  });
 
   const handleDeleteComment = (commentId: string) => {
-    mutate(commentId);
+    deleteMutation.mutate(commentId);
+  };
+
+  const onSubmitEdit: SubmitHandler<z.infer<typeof commentSchema>> = (data) => {
+    if (editingCommentId) {
+      editMutation.mutate({
+        commentId: editingCommentId,
+        content: data.content,
+      });
+    }
   };
 
   return (
@@ -88,28 +127,69 @@ export default function AllComments({
               {comment.users.username || "Anonymous"}
             </span>
           </div>
-          <p className="text-gray-700">{comment.content}</p>
+
+          {editingCommentId === comment.id ? (
+            <form onSubmit={handleSubmit(onSubmitEdit)} className="mt-2">
+              <Input
+                {...register("content")}
+                defaultValue={comment.content}
+                className="w-full p-2 border rounded"
+              />
+              <div className="mt-2 space-x-2">
+                <Button
+                  type="submit"
+                  disabled={editMutation.isPending}
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                >
+                  {editMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save"
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => setEditingCommentId(null)}
+                  className="bg-gray-300 hover:bg-gray-400 text-black text-xs"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <p className="text-gray-700">{comment.content}</p>
+          )}
+
           <span className="text-sm text-gray-500 mt-2 block">
             {new Date(comment.created_at).toLocaleString()}
           </span>
+
           {comment.users.id === currentUserId && (
             <div className="mt-2">
-              <Button
-                onClick={() => handleEditComment(comment.id)}
-                variant="secondary"
-                className="bg-blue-600 hover:bg-blue-900 mr-2 text-xs"
-              >
-                Edit
-              </Button>
+              {editingCommentId !== comment.id && (
+                <Button
+                  onClick={() => setEditingCommentId(comment.id)}
+                  variant="secondary"
+                  className="bg-blue-600 hover:bg-blue-900 mr-2 text-xs"
+                >
+                  Edit
+                </Button>
+              )}
               <Button
                 onClick={() => handleDeleteComment(comment.id)}
                 variant="secondary"
                 className="bg-red-600 hover:bg-red-900 space-x-2 text-xs"
-                disabled={deletingCommentId === comment.id || isPending}
+                disabled={
+                  deletingCommentId === comment.id || deleteMutation.isPending
+                }
               >
-                {deletingCommentId === comment.id && isPending ? (
+                {deletingCommentId === comment.id &&
+                deleteMutation.isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-2 w-2 animate-spin text-xs" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Deleting...
                   </>
                 ) : (
