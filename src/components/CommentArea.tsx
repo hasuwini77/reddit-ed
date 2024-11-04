@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createComment } from "@/actions/create-comment";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type CommentFormData = z.infer<typeof commentSchema>;
 
@@ -33,15 +34,30 @@ export function CommentArea({
   });
 
   const onSubmit = async (data: CommentFormData) => {
-    console.log("Form submitted", { ...data, postId, postSlug });
     setIsSubmitting(true);
     try {
-      await createComment({ content: data.content, postId, postSlug });
-      reset();
-      router.refresh();
+      const result = await createComment({
+        content: data.content,
+        postId,
+        postSlug,
+      });
+
+      if (result.status === "unauthenticated") {
+        toast.error("You must be logged in to post a comment.");
+        router.push("/auth/log-in");
+      } else if (result.status === "error") {
+        toast.error(
+          result.message || "Failed to post comment. Please try again."
+        );
+      } else if (result.status === "success") {
+        toast.success("Comment posted successfully!");
+        router.refresh();
+      }
     } catch (error) {
       console.error("Failed to post comment:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
+      reset();
       setIsSubmitting(false);
     }
   };

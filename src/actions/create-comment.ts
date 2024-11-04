@@ -2,9 +2,9 @@
 
 import { createClient } from "../../utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { commentSchema, createCommentSchema } from "@/actions/schemas";
+import { createCommentSchema } from "@/actions/schemas";
 import { z } from "zod";
+import { redirect } from "next/dist/server/api-utils";
 
 export const createComment = async (
   input: z.infer<typeof createCommentSchema>
@@ -19,7 +19,9 @@ export const createComment = async (
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
-  if (userError) throw new Error("Not authenticated");
+  if (userError || !user) {
+    return { status: "unauthenticated" };
+  }
 
   // Insert the comment
   const { error } = await supabase.from("comments").insert({
@@ -30,7 +32,9 @@ export const createComment = async (
 
   if (error) {
     console.error("Error inserting comment:", error);
-    throw error;
+    return { status: "error", message: "Failed to post comment" };
   }
   revalidatePath(`/post/${validatedData.postSlug}`);
+
+  return { status: "success" };
 };
