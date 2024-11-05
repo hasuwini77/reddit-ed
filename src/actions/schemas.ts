@@ -31,7 +31,7 @@ export const createCommentSchema = z.object({
 });
 
 export const userProfileSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters long"),
-  email: z.string().email("Invalid email format"),
-  avatar: z.string().optional(),
+  email: z.string().email(),
+  username: z.string().min(3).max(20),
+  avatar: z.string().url().nullable().optional(),
 });

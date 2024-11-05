@@ -55,6 +55,6 @@ export const editProfile = async ({
     throw new Error("Failed to update user");
   }
 
-  revalidatePath("/");
+  revalidatePath("/profile");
   redirect(`/profile`);
 };
