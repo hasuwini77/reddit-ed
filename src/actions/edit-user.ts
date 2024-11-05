@@ -24,23 +24,23 @@ export const editProfile = async ({
     throw new Error("Unauthorized");
   }
 
-  const { data } = await supabase
+  const { data: existingUser } = await supabase
     .from("users")
     .select("id")
     .eq("id", userId)
     .single();
 
-  if (!data) {
+  if (!existingUser) {
     throw new Error("User not found");
   }
 
-  const isUser = user.id === data.id;
+  const isUser = user.id === existingUser.id;
 
   if (!isUser) {
     throw new Error("Unauthorized");
   }
 
-  const { data: newData } = await supabase
+  const { data: updatedUser, error } = await supabase
     .from("users")
     .update({
       email: parsedData.email,
@@ -48,13 +48,18 @@ export const editProfile = async ({
       avatar: parsedData.avatar,
     })
     .eq("id", userId)
-    .single()
-    .throwOnError();
+    .select()
+    .single();
 
-  if (!newData) {
+  if (error) {
+    console.error("Error updating user:", error);
+    throw new Error("Failed to update user");
+  }
+
+  if (!updatedUser) {
     throw new Error("Failed to update user");
   }
 
   revalidatePath("/profile");
-  redirect(`/profile`);
+  return { success: true, user: updatedUser };
 };

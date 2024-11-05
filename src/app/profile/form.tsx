@@ -20,12 +20,18 @@ export const EditProfileForm = ({
   userId: string;
 }) => {
   const { mutate, isPending } = useMutation({
-    mutationFn: editProfile,
-    onError: (error) => {
-      toast.error(error.message);
+    mutationFn: (data: UserFormData) => editProfile({ userId, userData: data }),
+    onError: (error: Error) => {
+      toast.error(
+        error.message || "An error occurred while updating the profile"
+      );
     },
-    onSuccess: () => {
-      toast.success("Profile updated successfully");
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error("Failed to update profile");
+      }
     },
   });
 
@@ -33,7 +39,7 @@ export const EditProfileForm = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof userProfileSchema>>({
+  } = useForm<UserFormData>({
     resolver: zodResolver(userProfileSchema),
     defaultValues: {
       email: defaultValues.email,
@@ -42,7 +48,7 @@ export const EditProfileForm = ({
     },
   });
 
-  const onSubmit = handleSubmit((data) => mutate({ userId, userData: data }));
+  const onSubmit = handleSubmit((data) => mutate(data));
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
