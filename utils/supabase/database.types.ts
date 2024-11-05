@@ -12,16 +12,22 @@ export type Database = {
       comments: {
         Row: {
           content: string
+          created_at: string
+          id: string
           post_id: string
           user_id: string
         }
         Insert: {
           content: string
+          created_at?: string
+          id?: string
           post_id?: string
           user_id?: string
         }
         Update: {
           content?: string
+          created_at?: string
+          id?: string
           post_id?: string
           user_id?: string
         }
@@ -36,7 +42,7 @@ export type Database = {
           {
             foreignKeyName: "comments_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -47,6 +53,7 @@ export type Database = {
           content: string | null
           created_at: string
           id: string
+          image: string | null
           slug: string
           title: string
           user_id: string | null
@@ -55,6 +62,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           id?: string
+          image?: string | null
           slug: string
           title: string
           user_id?: string | null
@@ -63,6 +71,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           id?: string
+          image?: string | null
           slug?: string
           title?: string
           user_id?: string | null
