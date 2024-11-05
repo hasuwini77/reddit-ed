@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useUser } from "@/hooks/useUser";
 
 type UserFormData = z.infer<typeof userProfileSchema>;
 
@@ -19,6 +20,8 @@ export const EditProfileForm = ({
   defaultValues: UserFormData;
   userId: string;
 }) => {
+  const { refreshUser } = useUser();
+
   const { mutate, isPending } = useMutation({
     mutationFn: (data: UserFormData) => editProfile({ userId, userData: data }),
     onError: (error: Error) => {
@@ -29,6 +32,7 @@ export const EditProfileForm = ({
     onSuccess: (data) => {
       if (data.success) {
         toast.success("Profile updated successfully");
+        refreshUser();
       } else {
         toast.error("Failed to update profile");
       }

@@ -42,7 +42,7 @@ export const useUser = () => {
     return () => clearInterval(interval);
   }, [queryClient]);
 
-  return useQuery<UserType | null, Error>({
+  const query = useQuery<UserType | null, Error>({
     queryKey: ["user"],
     queryFn: fetchUserData,
     refetchOnWindowFocus: true,
@@ -50,4 +50,10 @@ export const useUser = () => {
     refetchInterval: 300000, // Refetch every 5 minutes
     staleTime: 300000, // Consider data stale after 5 minutes
   });
+
+  const refreshUser = () => {
+    queryClient.invalidateQueries({ queryKey: ["user"] });
+  };
+
+  return { ...query, refreshUser };
 };
