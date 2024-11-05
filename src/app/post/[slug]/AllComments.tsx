@@ -135,7 +135,7 @@ export default function AllComments({
                 defaultValue={comment.content}
                 className="w-full p-2 border rounded"
               />
-              <div className="mt-2 space-x-2">
+              <div className="mt-2 space-x-2 flex">
                 <Button
                   type="submit"
                   disabled={editMutation.isPending}
