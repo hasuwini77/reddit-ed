@@ -35,9 +35,13 @@ export function FeedPost({
             <Image
               src={image}
               alt={title}
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{
+                objectFit: "cover", // Replaces objectFit prop
+                borderRadius: "0.5rem", // Optional: rounded corners, if needed
+              }}
               className="rounded-lg"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           </div>
         </div>
