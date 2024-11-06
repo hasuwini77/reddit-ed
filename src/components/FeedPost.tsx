@@ -2,9 +2,22 @@ import Image from "next/image";
 import { HomePostsType } from "../../utils/supabase/queries";
 import Link from "next/link";
 
-type SinglePostType = Omit<HomePostsType[number], "id">;
+interface FeedPostProps {
+  title: string;
+  content: string | null;
+  slug: string;
+  image?: string | null;
+  user_id: string | null;
+  users?: { username: string } | null;
+}
 
-export function FeedPost({ title, slug, content, users }: SinglePostType) {
+export function FeedPost({
+  title,
+  slug,
+  content,
+  image,
+  users,
+}: FeedPostProps) {
   return (
     <Link href={`/post/${slug}`} className="blockrounded-lg p-4">
       <div>
@@ -16,9 +29,19 @@ export function FeedPost({ title, slug, content, users }: SinglePostType) {
           </p>
         )}
       </div>
-      <div>
-        {slug && <Image src={""} alt={title} height={150} width={200} />}
-      </div>
+      {image && (
+        <div className="mb-4 w-full max-w-md">
+          <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+            <Image
+              src={image}
+              alt={title}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          </div>
+        </div>
+      )}
     </Link>
   );
 }

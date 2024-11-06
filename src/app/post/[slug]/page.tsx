@@ -80,16 +80,18 @@ export default async function PostPage({
         <h1 className="mb-6 text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900 dark:text-white">
           {post.title}
         </h1>
-        <div className="mb-6 w-full max-w-2xl mx-auto">
-          <Image
-            src={post.image}
-            width={800}
-            height={450}
-            alt={post.title}
-            className="rounded-lg shadow-md object-cover w-full h-auto"
-            priority
-          />
-        </div>
+        {post.image && (
+          <div className="mb-4 w-full max-w-md p-3 rounded-lg shadow-sm">
+            <Image
+              src={post.image}
+              width={600}
+              height={200}
+              alt={post.title}
+              className="rounded-lg shadow-md object-cover w-full h-[300px]"
+              priority
+            />
+          </div>
+        )}
 
         <p className="mb-8 text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300">
           {post.content}

@@ -21,6 +21,7 @@ export default async function Home() {
         <FeedPost
           key={post.id}
           title={post.title}
+          image={post.image}
           content={post.content}
           users={post.users}
           user_id={post.user_id}

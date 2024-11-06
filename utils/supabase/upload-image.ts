@@ -4,20 +4,25 @@ import { v4 as uuid } from "uuid";
 export const uploadImage = async (image: File) => {
   const supabase = createClient();
 
-  const imageName = image.name.split(".");
-  const path = `${imageName[0]}-${uuid()}.${imageName[1]}`;
+  const fileExt = image.name.split(".").pop();
+  const fileName = `${uuid()}.${fileExt}`;
+  const filePath = `images/${fileName}`;
 
-  const { data, error } = await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from("images")
-    .upload(path, image);
+    .upload(filePath, image);
 
-  if (error) {
-    throw error;
+  if (uploadError) {
+    console.error("Error uploading image:", uploadError);
+    throw new Error("Failed to upload image");
   }
 
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from("images").getPublicUrl(data.path);
+  const { data } = supabase.storage.from("images").getPublicUrl(filePath);
 
-  return publicUrl;
+  if (!data || !data.publicUrl) {
+    console.error("Error getting public URL");
+    throw new Error("Failed to get public URL for image");
+  }
+
+  return data.publicUrl;
 };

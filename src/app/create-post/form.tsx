@@ -1,42 +1,84 @@
 "use client";
 
-import { createPost } from "@/actions/create-post";
+import { createPost, CreatePostResponse } from "@/actions/create-post";
 import { postSchema } from "@/actions/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const createPostSchema = postSchema.omit({ image: true }).extend({
-  image: z.instanceof(FileList).optional(),
+  image: z.instanceof(File).optional(),
 });
 
 export default function CreatePostPage() {
-  const { register, handleSubmit } = useForm<z.infer<typeof createPostSchema>>({
+  const router = useRouter();
+  const { register, handleSubmit, setValue } = useForm<
+    z.infer<typeof createPostSchema>
+  >({
     resolver: zodResolver(createPostSchema),
     mode: "onBlur",
   });
 
   const [isPending, startTransition] = useTransition();
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles && acceptedFiles.length > 0) {
+        const file = acceptedFiles[0];
+        setValue("image", file);
+        setFileName(file.name);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [setValue]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
+    maxFiles: 1,
+  });
 
   const onSubmit = handleSubmit((values) => {
     startTransition(async () => {
       try {
-        const imageForm = new FormData();
-        if (values.image) {
-          imageForm.append("images", values.image[0]);
+        const formData = new FormData();
+        formData.append("title", values.title || "");
+        formData.append("content", values.content || "");
+        if (values.image && values.image instanceof File) {
+          formData.append("image", values.image);
         }
 
-        await createPost({
-          ...values,
-          image: values.image ? imageForm : undefined,
-        });
+        const response: CreatePostResponse = await createPost(formData);
+        if (!response.success) {
+          throw new Error(response.error);
+        }
+
         toast.success("Post created successfully!");
+        // Reset form and preview
+        setPreviewImage(null);
+        setFileName(null);
+        //redirect user to homepage
+        router.push("/");
         // Handle successful post creation
       } catch (error) {
-        toast.error("Failed to create post. Please try again.");
-        // Handle error
+        if (error instanceof Error) {
+          toast.error(`Failed to create post: ${error.message}`);
+        } else {
+          toast.error("Failed to create post: An unknown error occurred");
+        }
       }
     });
   });
@@ -64,12 +106,32 @@ export default function CreatePostPage() {
           <label className="block text-gray-700 dark:text-gray-200">
             Upload Image
           </label>
-          <input
-            {...register("image")}
-            type="file"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            placeholder="Place your Image here"
-          />
+          <div
+            {...getRootProps()}
+            className={`mt-1 p-6 border-2 border-dashed rounded-lg ${
+              isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+            } cursor-pointer`}
+          >
+            <input {...getInputProps()} />
+            {previewImage ? (
+              <div className="flex flex-col items-center">
+                <Image
+                  src={previewImage}
+                  alt="Preview"
+                  width={200}
+                  height={200}
+                  className="object-cover"
+                />
+                <p className="mt-2 text-sm text-gray-500">{fileName}</p>
+              </div>
+            ) : isDragActive ? (
+              <p className="text-blue-500">Drop the image here ...</p>
+            ) : (
+              <p className="text-gray-500">
+                Drag 'n' drop an image here, or click to select a file
+              </p>
+            )}
+          </div>
         </div>
 
         <div>
