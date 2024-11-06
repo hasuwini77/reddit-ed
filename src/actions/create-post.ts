@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { postSchema } from "./schemas";
 import { z } from "zod";
 import { slugify } from "../../utils/slugify";
+import { uploadImage } from "../../utils/supabase/upload-image";
 
 export const createPost = async (data: z.infer<typeof postSchema>) => {
   // Validate the data
@@ -41,6 +42,14 @@ export const createPost = async (data: z.infer<typeof postSchema>) => {
     );
   }
 
+  const imageFile = data.image?.get("images");
+  console.log(imageFile);
+  if ((!(imageFile instanceof File) && imageFile !== null) || undefined) {
+    throw new Error("Invalid image file");
+  }
+
+  const imagePublicUrl = imageFile ? await uploadImage(imageFile) : null;
+
   // Fetch the user's ID from the users table
   const { data: userData, error: userDataError } = await supabase
     .from("users")
@@ -59,7 +68,9 @@ export const createPost = async (data: z.infer<typeof postSchema>) => {
   const { error: postError } = await supabase
     .from("posts")
     .insert({
-      ...validatedData,
+      title: validatedData.title,
+      content: validatedData.content,
+      image: imagePublicUrl,
       slug: uniqueSlug,
       user_id: userData.id,
     })

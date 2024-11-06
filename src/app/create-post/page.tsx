@@ -8,9 +8,13 @@ import { z } from "zod";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
+const createPostSchema = postSchema.omit({ image: true }).extend({
+  image: z.instanceof(FileList).optional(),
+});
+
 export default function CreatePostPage() {
-  const { register, handleSubmit } = useForm<z.infer<typeof postSchema>>({
-    resolver: zodResolver(postSchema),
+  const { register, handleSubmit } = useForm<z.infer<typeof createPostSchema>>({
+    resolver: zodResolver(createPostSchema),
     mode: "onBlur",
   });
 
@@ -19,7 +23,15 @@ export default function CreatePostPage() {
   const onSubmit = handleSubmit((values) => {
     startTransition(async () => {
       try {
-        await createPost(values);
+        const imageForm = new FormData();
+        if (values.image) {
+          imageForm.append("images", values.image[0]);
+        }
+
+        await createPost({
+          ...values,
+          image: values.image ? imageForm : undefined,
+        });
         toast.success("Post created successfully!");
         // Handle successful post creation
       } catch (error) {
@@ -48,16 +60,17 @@ export default function CreatePostPage() {
           />
         </div>
 
-        {/* <div>
+        <div>
           <label className="block text-gray-700 dark:text-gray-200">
-            Image URL
+            Upload Image
           </label>
           <input
-            type="text"
+            {...register("image")}
+            type="file"
             className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            placeholder="Enter the image URL"
+            placeholder="Place your Image here"
           />
-        </div> */}
+        </div>
 
         <div>
           <label className="block text-gray-700 dark:text-gray-200">

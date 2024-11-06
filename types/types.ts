@@ -10,6 +10,7 @@ export interface PostType {
   slug: string;
   content: string;
   user_id: string;
+  image: string;
   users: {
     username: string;
     email: string;

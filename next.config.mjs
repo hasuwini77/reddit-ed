@@ -6,6 +6,7 @@ const nextConfig = {
       "assets.aceternity.com",
       "avatar.iran.liara.run",
       "gravatar.com",
+      "sxkekcpzmbgnmntnhwfa.supabase.co",
     ],
   },
 };

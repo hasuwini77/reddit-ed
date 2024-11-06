@@ -18,6 +18,7 @@ export const postSchema = z.object({
     .string()
     .min(10, "content must be at least 10 characters")
     .optional(),
+  image: z.instanceof(FormData).optional(),
 });
 
 export const commentSchema = z.object({

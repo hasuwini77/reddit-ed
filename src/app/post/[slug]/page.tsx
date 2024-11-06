@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CommentArea } from "@/components/CommentArea";
 import { PostType, Comment } from "../../../../types/types";
 import AllComments from "./AllComments";
+import Image from "next/image";
 
 export default async function PostPage({
   params,
@@ -17,7 +18,7 @@ export default async function PostPage({
   // Fetch the post details
   const { data: postData, error: postError } = await supabase
     .from("posts")
-    .select("id, title, content, user_id, users(username)")
+    .select("id, title, content, user_id, image, users(username)")
     .eq("slug", params.slug)
     .single();
 
@@ -79,6 +80,17 @@ export default async function PostPage({
         <h1 className="mb-6 text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900 dark:text-white">
           {post.title}
         </h1>
+        <div className="mb-6 w-full max-w-2xl mx-auto">
+          <Image
+            src={post.image}
+            width={800}
+            height={450}
+            alt={post.title}
+            className="rounded-lg shadow-md object-cover w-full h-auto"
+            priority
+          />
+        </div>
+
         <p className="mb-8 text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300">
           {post.content}
         </p>
