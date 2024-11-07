@@ -34,6 +34,8 @@ export interface PostFormProps {
 }
 
 export interface Comment {
+  replies?: Comment[];
+  parent_id: any;
   id: string;
   content: string;
   created_at: string;

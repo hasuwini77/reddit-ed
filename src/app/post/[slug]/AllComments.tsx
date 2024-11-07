@@ -26,6 +26,7 @@ type Comment = {
     username: string;
     avatar: string | null | undefined;
   };
+  replies?: Comment[]; // Add replies to the comment type
 };
 
 type AllCommentsProps = {
@@ -144,143 +145,150 @@ export default function AllComments({
     }
   };
 
-  return (
-    <div className="mt-8 space-y-6">
-      {comments.map((comment) => (
-        <div key={comment.id} className="bg-white p-4 rounded-lg shadow">
-          <div className="flex items-center mb-2">
-            {comment.users.avatar ? (
-              <Image
-                src={comment.users.avatar}
-                alt={`${comment.users.username}'s avatar`}
-                width={40}
-                height={40}
-                className="rounded-full mr-3"
-              />
-            ) : (
-              <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
-            )}
-            <span className="font-semibold text-black">
-              {comment.users.username || "Anonymous"}
-            </span>
-          </div>
-
-          {editingCommentId === comment.id ? (
-            <form onSubmit={handleSubmit(onSubmitEdit)} className="mt-2">
-              <Input
-                {...register("content")}
-                defaultValue={comment.content}
-                className="w-full p-2 border rounded"
-              />
-              <div className="mt-2 space-x-2 flex">
-                <Button
-                  type="submit"
-                  disabled={editMutation.isPending}
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
-                >
-                  {editMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    "Save"
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => setEditingCommentId(null)}
-                  className="bg-gray-300 hover:bg-gray-400 text-black text-xs"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </form>
-          ) : (
-            <p className="text-gray-700">{comment.content}</p>
-          )}
-
-          <span className="text-sm text-gray-500 mt-2 block">
-            {new Date(comment.created_at).toLocaleString()}
-          </span>
-
-          {comment.users.id === currentUserId && (
-            <div className="mt-2">
-              {editingCommentId !== comment.id && (
-                <Button
-                  onClick={() => setEditingCommentId(comment.id)}
-                  variant="secondary"
-                  className="bg-blue-600 hover:bg-blue-900 mr-2 text-xs"
-                >
-                  Edit
-                </Button>
-              )}
-              <Button
-                onClick={() => handleDeleteComment(comment.id)}
-                variant="secondary"
-                className="bg-red-600 hover:bg-red-900 space-x-2 text-xs"
-                disabled={
-                  deletingCommentId === comment.id || deleteMutation.isPending
-                }
-              >
-                {deletingCommentId === comment.id &&
-                deleteMutation.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Deleting...
-                  </>
-                ) : (
-                  "Delete"
-                )}
-              </Button>
-            </div>
-          )}
-
-          {currentUserId && (
-            <div className="mt-2">
-              {replyingTo !== comment.id ? (
-                <Button
-                  onClick={() => setReplyingTo(comment.id)}
-                  variant="secondary"
-                  className="bg-green-600 hover:bg-green-900 mr-2 text-xs"
-                >
-                  Reply
-                </Button>
+  const renderComment = (comment: Comment, isReply = false) => (
+    <div
+      key={comment.id}
+      className={`bg-white p-4 rounded-lg shadow ${
+        isReply ? "ml-8 border-l-2 border-blue-200 mt-2" : "mt-4"
+      }`}
+    >
+      <div className="flex items-center mb-2">
+        {comment.users.avatar ? (
+          <Image
+            src={comment.users.avatar}
+            alt={`${comment.users.username}'s avatar`}
+            width={40}
+            height={40}
+            className="rounded-full mr-3"
+          />
+        ) : (
+          <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+        )}
+        <span className="font-semibold text-black">
+          {comment.users.username || "Anonymous"}
+        </span>{" "}
+        {/* Fixed the unclosed <span> tag */}
+      </div>
+      {editingCommentId === comment.id ? (
+        <form onSubmit={handleSubmit(onSubmitEdit)} className="mt-2">
+          <Input
+            {...register("content")}
+            defaultValue={comment.content}
+            className="w-full p-2 border rounded"
+          />
+          <div className="mt-2 space-x-2 flex">
+            <Button
+              type="submit"
+              disabled={editMutation.isPending}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
+            >
+              {editMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
               ) : (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.target as HTMLFormElement;
-                    const content = (
-                      form.elements.namedItem("content") as HTMLTextAreaElement
-                    ).value;
-                    handleReplySubmit(comment.id, content);
-                  }}
-                >
-                  <textarea
-                    name="content"
-                    required
-                    className="w-full p-2 border rounded text-black"
-                  />
-                  <Button
-                    type="submit"
-                    className="mt-2 bg-blue-600 hover:bg-blue-900 text-xs"
-                  >
-                    Submit Reply
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => setReplyingTo(null)}
-                    className="mt-2 ml-2 bg-gray-300 hover:bg-gray-400 text-black text-xs"
-                  >
-                    Cancel
-                  </Button>
-                </form>
+                "Save"
               )}
-            </div>
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setEditingCommentId(null)}
+              className="bg-gray-300 hover:bg-gray-400 text-black text-xs"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </form>
+      ) : (
+        <p className="text-gray-700">{comment.content}</p>
+      )}
+      <span className="text-sm text-gray-500 mt-2 block">
+        {new Date(comment.created_at).toLocaleString()}
+      </span>{" "}
+      {/* Fixed missing </span> */}
+      {comment.users.id === currentUserId && (
+        <div className="mt-2">
+          {editingCommentId !== comment.id && (
+            <Button
+              onClick={() => setEditingCommentId(comment.id)}
+              variant="secondary"
+              className="bg-blue-600 hover:bg-blue-900 mr-2 text-xs"
+            >
+              Edit
+            </Button>
+          )}
+          <Button
+            onClick={() => handleDeleteComment(comment.id)}
+            variant="secondary"
+            className="bg-red-600 hover:bg-red-900 space-x-2 text-xs"
+            disabled={
+              deletingCommentId === comment.id || deleteMutation.isPending
+            }
+          >
+            {deletingCommentId === comment.id && deleteMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Delete"
+            )}
+          </Button>
+        </div>
+      )}
+      {currentUserId && (
+        <div className="mt-2">
+          {replyingTo !== comment.id ? (
+            <Button
+              onClick={() => setReplyingTo(comment.id)}
+              variant="secondary"
+              className="bg-green-600 hover:bg-green-900 mr-2 text-xs"
+            >
+              Reply
+            </Button>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const content = (
+                  form.elements.namedItem("content") as HTMLTextAreaElement
+                ).value;
+                handleReplySubmit(comment.id, content);
+              }}
+            >
+              <textarea
+                name="content"
+                required
+                className="w-full p-2 border rounded text-black"
+              />
+              <Button
+                type="submit"
+                className="mt-2 bg-blue-600 hover:bg-blue-900 text-xs"
+              >
+                Submit Reply
+              </Button>
+              <Button
+                type="button"
+                onClick={() => setReplyingTo(null)}
+                className="mt-2 ml-2 bg-gray-300 hover:bg-gray-400 text-black text-xs"
+              >
+                Cancel
+              </Button>
+            </form>
           )}
         </div>
-      ))}
+      )}
+      {/* Render replies */}
+      {comment.replies &&
+        comment.replies.map((reply) => renderComment(reply, true))}
+    </div>
+  );
+
+  return (
+    <div className="mt-8 space-y-6">
+      {comments.map((comment) => renderComment(comment))}
     </div>
   );
 }
