@@ -31,6 +31,13 @@ export const createCommentSchema = z.object({
   postSlug: z.string(),
 });
 
+export const createReplySchema = z.object({
+  content: commentSchema.shape.content,
+  postId: z.string(),
+  postSlug: z.string(),
+  parentId: z.string(),
+});
+
 export const userProfileSchema = z.object({
   email: z.string().email(),
   username: z.string().min(3).max(20),
