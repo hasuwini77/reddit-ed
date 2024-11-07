@@ -22,7 +22,9 @@ export function FeedPost({
     <Link href={`/post/${slug}`} className="blockrounded-lg p-4">
       <div>
         <h1 className="text-xl font-semibold">{title}</h1>
-        <p className="text-gray-600 mt-2">{content?.substring(0, 150)}...</p>
+        <p className="text-gray-600 mt-2 max-w-[500px]">
+          {content?.substring(0, 150)}...
+        </p>
         {users && (
           <p className="text-sm text-gray-500 mt-2">
             Posted by {users.username}

@@ -50,6 +50,7 @@ export default function AllComments({
     null
   );
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<EditCommentFormData>({
     resolver: zodResolver(commentSchema),
@@ -90,6 +91,9 @@ export default function AllComments({
       commentId: string;
       content: string;
     }) => editComment(commentId, postSlug, { content }),
+    onMutate: (variables) => {
+      setEditingCommentId(variables.commentId);
+    },
     onSuccess: () => {
       toast.success("Comment edited successfully");
       setEditingCommentId(null);
@@ -98,6 +102,7 @@ export default function AllComments({
     },
     onError: () => {
       toast.error("Failed to edit comment");
+      setEditingCommentId(null);
     },
   });
 
@@ -114,6 +119,8 @@ export default function AllComments({
       toast.error("Failed to post reply due to invalid parent ID");
       return;
     }
+
+    setIsSubmittingReply(true);
 
     try {
       const result = await createReply({
@@ -133,6 +140,8 @@ export default function AllComments({
     } catch (error) {
       console.error("Error posting reply:", error);
       toast.error("An error occurred while posting the reply");
+    } finally {
+      setIsSubmittingReply(false);
     }
   };
 
@@ -264,8 +273,16 @@ export default function AllComments({
               <Button
                 type="submit"
                 className="mt-2 bg-blue-600 hover:bg-blue-900 text-xs"
+                disabled={isSubmittingReply}
               >
-                Submit Reply
+                {isSubmittingReply ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Reply"
+                )}
               </Button>
               <Button
                 type="button"
