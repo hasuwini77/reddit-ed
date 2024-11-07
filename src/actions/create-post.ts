@@ -84,22 +84,26 @@ export const createPost = async (
     }
 
     // Insert new post into the database
-    const { error: postError } = await supabase
-      .from("posts")
-      .insert({
-        title: validatedData.title,
-        content: validatedData.content,
-        image: imagePublicUrl,
-        slug: uniqueSlug,
-        user_id: userData.id,
-      })
-      .throwOnError();
+    const { error: postError } = await supabase.from("posts").insert({
+      title: validatedData.title,
+      content: validatedData.content,
+      image: imagePublicUrl,
+      slug: uniqueSlug,
+      user_id: userData.id,
+    });
 
     if (postError) {
       console.error("Error inserting post:", postError);
+      if (
+        postError.message &&
+        postError.message.includes(
+          "duplicate key value violates unique constraint"
+        )
+      ) {
+        return { success: false, error: "Title already exists" };
+      }
       return { success: false, error: "Failed to create post" };
     }
-
     console.log("Post created successfully");
 
     revalidatePath("/");

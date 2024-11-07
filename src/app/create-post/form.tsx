@@ -11,6 +11,11 @@ import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Spinner from "@/components/Spinner";
+import { Loader2 } from "lucide-react";
+
+const isOnlyWhitespace = (str: string | undefined) =>
+  !str || str.trim().length === 0;
 
 const createPostSchema = postSchema.omit({ image: true }).extend({
   image: z.instanceof(File).optional(),
@@ -28,6 +33,7 @@ export default function CreatePostPage() {
   const [isPending, startTransition] = useTransition();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -52,17 +58,24 @@ export default function CreatePostPage() {
   });
 
   const onSubmit = handleSubmit((values) => {
+    if (isOnlyWhitespace(values.title) || isOnlyWhitespace(values.content)) {
+      toast.error("Title and content cannot be empty or only whitespace");
+      return;
+    }
+
+    setIsSubmitting(true);
     startTransition(async () => {
       try {
         const formData = new FormData();
-        formData.append("title", values.title || "");
-        formData.append("content", values.content || "");
+        formData.append("title", values.title?.trim() || "");
+        formData.append("content", values.content?.trim() || "");
         if (values.image && values.image instanceof File) {
           formData.append("image", values.image);
         }
 
         const response: CreatePostResponse = await createPost(formData);
         if (!response.success) {
+          // Throw an error with the specific message if title already exists
           throw new Error(response.error);
         }
 
@@ -75,10 +88,18 @@ export default function CreatePostPage() {
         // Handle successful post creation
       } catch (error) {
         if (error instanceof Error) {
-          toast.error(`Failed to create post: ${error.message}`);
+          if (error.message === "Title already exists") {
+            toast.error(
+              "Title already exists, please choose a different title"
+            );
+          } else {
+            toast.error(`Failed to create post: ${error.message}`);
+          }
         } else {
           toast.error("Failed to create post: An unknown error occurred");
         }
+      } finally {
+        setIsSubmitting(false);
       }
     });
   });
@@ -151,9 +172,18 @@ export default function CreatePostPage() {
           <button
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-            disabled={isPending}
+            disabled={isSubmitting}
           >
-            {isPending ? "Submitting..." : "Submit Post"}
+            {isSubmitting ? (
+              <>
+                <div className="flex justify-center items-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Posting...
+                </div>
+              </>
+            ) : (
+              "Create Post"
+            )}
           </button>
         </div>
       </form>
