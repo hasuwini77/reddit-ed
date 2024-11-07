@@ -65,7 +65,7 @@ export default function AllComments({
       setDeletingCommentId(null);
     },
     onSuccess: () => {
-      toast.success("Comment deleted successfully", { richColors: true });
+      toast.success("Comment deleted successfully");
       router.refresh();
       setDeletingCommentId(null);
     },
@@ -166,8 +166,7 @@ export default function AllComments({
         )}
         <span className="font-semibold text-black">
           {comment.users.username || "Anonymous"}
-        </span>{" "}
-        {/* Fixed the unclosed <span> tag */}
+        </span>
       </div>
       {editingCommentId === comment.id ? (
         <form onSubmit={handleSubmit(onSubmitEdit)} className="mt-2">
@@ -205,8 +204,7 @@ export default function AllComments({
       )}
       <span className="text-sm text-gray-500 mt-2 block">
         {new Date(comment.created_at).toLocaleString()}
-      </span>{" "}
-      {/* Fixed missing </span> */}
+      </span>
       {comment.users.id === currentUserId && (
         <div className="mt-2">
           {editingCommentId !== comment.id && (

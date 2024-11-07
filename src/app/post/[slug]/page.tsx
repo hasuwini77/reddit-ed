@@ -11,7 +11,7 @@ import Image from "next/image";
 // Helper function to structure comments
 function structureComments(flatComments: Comment[]): Comment[] {
   const commentMap = new Map();
-  const rootComments: Comment[] = [];
+  const rootComments: Comment[] = []; // for my "parent" comment
 
   flatComments.forEach((comment) => {
     comment.replies = [];
@@ -69,7 +69,7 @@ export default async function PostPage({
     `
     )
     .eq("post_id", post.id)
-    .order("created_at", { ascending: true }); // Change to ascending order
+    .order("created_at", { ascending: true });
 
   if (commentsError) {
     console.error("Error fetching comments:", commentsError);
