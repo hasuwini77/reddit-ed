@@ -99,19 +99,56 @@ export default async function PostPage({
 
   return (
     <main className="container mx-auto px-4 py-8 md:px-8 lg:px-16">
-      {/* ... (rest of your JSX remains the same) ... */}
+      <div className="max-w-2xl mx-auto">
+        <span className="mb-2 block text-sm text-gray-500">
+          {post.users?.username || "Anonymous"}
+        </span>
+
+        <h1 className="mb-6 text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900 dark:text-white">
+          {post.title}
+        </h1>
+
+        {post.image && (
+          <div className="mb-4 w-full max-w-md p-3 rounded-lg shadow-sm">
+            <Image
+              src={post.image}
+              width={600}
+              height={200}
+              alt={post.title}
+              className="rounded-lg shadow-md object-cover w-full h-[300px]"
+              priority
+            />
+          </div>
+        )}
+
+        <p className="mb-8 text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300">
+          {post.content}
+        </p>
+
+        {isAuthor && (
+          <div className="flex flex-wrap gap-4">
+            <Button
+              as={Link}
+              variant="secondary"
+              href={`/post/${params.slug}/edit`}
+              className="text-sm md:text-base w-30 h-10 px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Edit
+            </Button>
+            <DeletePostButton postId={post.id} />
+          </div>
+        )}
+      </div>
 
       <div className="max-w-2xl mx-auto mt-12">
         <h2 className="text-2xl font-bold mb-4">Comments</h2>
         <div className="mt-8 space-y-6">
           {structuredComments.length > 0 ? (
-            <>
-              <AllComments
-                comments={structuredComments}
-                currentUserId={user?.id}
-                postSlug={params.slug}
-              />
-            </>
+            <AllComments
+              comments={structuredComments}
+              currentUserId={user?.id}
+              postSlug={params.slug}
+            />
           ) : (
             <p>No comments yet.</p>
           )}
