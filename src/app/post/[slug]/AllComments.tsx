@@ -14,6 +14,8 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { createReply } from "@/actions/create-reply";
+import { v4 as uuidv4, validate as validateUUID } from "uuid";
 
 type Comment = {
   id: string;
@@ -42,6 +44,7 @@ export default function AllComments({
   postSlug,
 }: AllCommentsProps) {
   const router = useRouter();
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
     null
   );
@@ -57,14 +60,7 @@ export default function AllComments({
       setDeletingCommentId(commentId);
     },
     onError: (error: Error) => {
-      if (error.message === "You are not the author of this comment") {
-        toast.error("You can only delete your own comments.");
-      } else if (error.message === "Authentication error") {
-        toast.error("You must be logged in to delete a comment.");
-        router.push("/auth/log-in");
-      } else {
-        toast.error("Failed to delete comment. Please try again.");
-      }
+      handleDeleteError(error);
       setDeletingCommentId(null);
     },
     onSuccess: () => {
@@ -73,6 +69,17 @@ export default function AllComments({
       setDeletingCommentId(null);
     },
   });
+
+  const handleDeleteError = (error: Error) => {
+    if (error.message === "You are not the author of this comment") {
+      toast.error("You can only delete your own comments.");
+    } else if (error.message === "Authentication error") {
+      toast.error("You must be logged in to delete a comment.");
+      router.push("/auth/log-in");
+    } else {
+      toast.error("Failed to delete comment. Please try again.");
+    }
+  };
 
   const editMutation = useMutation({
     mutationFn: ({
@@ -88,9 +95,8 @@ export default function AllComments({
       reset();
       router.refresh();
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to edit comment");
-      console.error(error);
     },
   });
 
@@ -98,7 +104,38 @@ export default function AllComments({
     deleteMutation.mutate(commentId);
   };
 
-  const onSubmitEdit: SubmitHandler<z.infer<typeof commentSchema>> = (data) => {
+  const handleReplySubmit = async (commentId: string, content: string) => {
+    if (!currentUserId) return;
+
+    // Validate commentId to ensure it is a valid UUID
+    if (!validateUUID(commentId)) {
+      console.error("Invalid UUID for parentId:", commentId);
+      toast.error("Failed to post reply due to invalid parent ID");
+      return;
+    }
+
+    try {
+      const result = await createReply({
+        content,
+        postId: postSlug,
+        parentId: commentId,
+        postSlug,
+      });
+
+      if (result.status === "success") {
+        setReplyingTo(null);
+        router.refresh();
+        toast.success("Reply posted successfully");
+      } else {
+        toast.error("Failed to post reply");
+      }
+    } catch (error) {
+      console.error("Error posting reply:", error);
+      toast.error("An error occurred while posting the reply");
+    }
+  };
+
+  const onSubmitEdit: SubmitHandler<EditCommentFormData> = (data) => {
     if (editingCommentId) {
       editMutation.mutate({
         commentId: editingCommentId,
@@ -196,6 +233,50 @@ export default function AllComments({
                   "Delete"
                 )}
               </Button>
+            </div>
+          )}
+
+          {currentUserId && (
+            <div className="mt-2">
+              {replyingTo !== comment.id ? (
+                <Button
+                  onClick={() => setReplyingTo(comment.id)}
+                  variant="secondary"
+                  className="bg-green-600 hover:bg-green-900 mr-2 text-xs"
+                >
+                  Reply
+                </Button>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    const content = (
+                      form.elements.namedItem("content") as HTMLTextAreaElement
+                    ).value;
+                    handleReplySubmit(comment.id, content);
+                  }}
+                >
+                  <textarea
+                    name="content"
+                    required
+                    className="w-full p-2 border rounded text-black"
+                  />
+                  <Button
+                    type="submit"
+                    className="mt-2 bg-blue-600 hover:bg-blue-900 text-xs"
+                  >
+                    Submit Reply
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => setReplyingTo(null)}
+                    className="mt-2 ml-2 bg-gray-300 hover:bg-gray-400 text-black text-xs"
+                  >
+                    Cancel
+                  </Button>
+                </form>
+              )}
             </div>
           )}
         </div>

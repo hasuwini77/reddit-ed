@@ -8,7 +8,6 @@ import { z } from "zod";
 export const createReply = async (input: z.infer<typeof createReplySchema>) => {
   const supabase = createClient();
 
-  // Validate the input data
   const validatedData = createReplySchema.parse(input);
 
   // Get the current user
@@ -32,10 +31,24 @@ export const createReply = async (input: z.infer<typeof createReplySchema>) => {
     return { status: "error", message: "Parent comment not found" };
   }
 
-  // Insert the reply
+  // Fetch the post ID (UUID) from the post slug
+  const { data: postData, error: postError } = await supabase
+    .from("posts")
+    .select("id")
+    .eq("slug", validatedData.postSlug)
+    .single();
+
+  if (postError || !postData) {
+    console.error("Error finding post:", postError);
+    return { status: "error", message: "Post not found" };
+  }
+
+  const postId = postData.id; // This is the UUID of the post
+
+  // Insert the reply with the correct post ID (UUID)
   const { error } = await supabase.from("comments").insert({
     content: validatedData.content,
-    post_id: validatedData.postId,
+    post_id: postId,
     user_id: user.id,
     parent_id: validatedData.parentId,
   });
