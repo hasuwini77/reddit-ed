@@ -1,21 +1,29 @@
 // MySidebar.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Sidebar, SidebarBody } from "./ui/sidebar";
 import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import Spinner from "./Spinner";
+import { logOut } from "@/actions/log-out";
 
 export function MySidebar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const { data: user, isLoading } = useUser(); // Use the user hook here
+  const router = useRouter();
+  const { data: user, isLoading } = useUser();
+  const { refreshUser } = useUser();
+
+  useEffect(() => {
+    // Refresh user data when the component mounts or when the route changes
+    refreshUser();
+  }, [refreshUser, pathname]);
 
   const links = [
     {
@@ -24,14 +32,15 @@ export function MySidebar() {
       icon: <IconUserBolt className="text-white h-5 w-5 flex-shrink-0" />,
     },
     {
-      label: "Settings",
-      href: "/configure",
-      icon: <IconSettings className="text-white h-5 w-5 flex-shrink-0" />,
-    },
-    {
       label: "Logout",
-      href: "/logout",
+      href: "#",
       icon: <IconArrowLeft className="text-white h-5 w-5 flex-shrink-0" />,
+      onClick: async (e: React.MouseEvent) => {
+        e.preventDefault();
+        await logOut();
+        refreshUser();
+        router.push("/");
+      },
     },
   ];
 
@@ -68,6 +77,7 @@ export function MySidebar() {
                 <Link
                   key={idx}
                   href={link.href}
+                  onClick={link.onClick}
                   className={cn(
                     "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
                     pathname === link.href && "font-bold"
