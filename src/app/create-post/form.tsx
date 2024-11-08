@@ -11,7 +11,6 @@ import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Spinner from "@/components/Spinner";
 import { Loader2 } from "lucide-react";
 
 const isOnlyWhitespace = (str: string | undefined) =>

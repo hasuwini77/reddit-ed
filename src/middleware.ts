@@ -1,5 +1,4 @@
 import { createServerClient } from "@supabase/ssr";
-// import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const middleware = async (request: NextRequest) => {
@@ -33,9 +32,26 @@ export const middleware = async (request: NextRequest) => {
   if (!user && protectedRoutes.includes(request.nextUrl.pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/log-in";
+
+    url.searchParams.set(
+      "message",
+      getMessageForRoute(request.nextUrl.pathname)
+    );
+
     return NextResponse.redirect(url);
   }
   return supabaseResponse;
 };
 
-const protectedRoutes = ["/create-post"];
+const protectedRoutes = ["/create-post", "/profile"];
+
+function getMessageForRoute(pathname: string): string {
+  switch (pathname) {
+    case "/create-post":
+      return "Please log in to create a post";
+    case "/profile":
+      return "Please log in to view your profile";
+    default:
+      return "Please log in to access this page";
+  }
+}

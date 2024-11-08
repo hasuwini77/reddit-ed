@@ -1,5 +1,5 @@
 import CreatePostForm from "./form";
 
-export default function CreatePostPage() {
+export default async function CreatePostPage() {
   return <CreatePostForm />;
 }
