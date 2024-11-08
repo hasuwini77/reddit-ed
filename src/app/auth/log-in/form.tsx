@@ -9,6 +9,7 @@ import { logIn } from "@/actions/log-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 export const LogInForm = () => {
   const { mutate, error, isPending } = useMutation({
@@ -38,7 +39,13 @@ export const LogInForm = () => {
         error={errors.password}
       />
       <Button className="bg-slate-800" type="submit">
-        {isPending ? "logging in..." : "log in"}
+        {isPending ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging...
+          </>
+        ) : (
+          "Log in"
+        )}
       </Button>
       {error && <p className="text-red-500 p-1">{error.message}</p>}
     </form>
