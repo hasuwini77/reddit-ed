@@ -21,7 +21,7 @@ export default async function MyNavbar() {
           <NavbarContent justify="start" className="flex items-center mx-2">
             <NavbarBrand className="mr-4 flex items-center">
               <Image src={"/eddriT.png"} alt="mylogo" width={70} height={70} />
-              <p className="hidden sm:block font-bold font-sans text-2xl ml-2">
+              <p className=" sm:block font-bold font-sans text-2xl ml-2">
                 eddriT
               </p>
             </NavbarBrand>
