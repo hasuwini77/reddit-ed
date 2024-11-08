@@ -15,7 +15,7 @@ export default async function MyNavbar() {
 
   return (
     <div className="py-3">
-      <Navbar isBordered>
+      <Navbar isBordered className="w-full">
         {/* Left side: Brand and Links */}
         <Link href="/">
           <NavbarContent justify="start" className="flex items-center mx-2">
@@ -29,25 +29,25 @@ export default async function MyNavbar() {
         </Link>
 
         {/* Center: Simple Search Bar */}
-        <NavbarContent className="flex-grow flex items-center justify-center">
+        <NavbarContent className="hidden lg:flex lg:flex-grow items-center justify-center">
           <SearchBar />
         </NavbarContent>
 
         {/* Right side: Avatar and Create Post Button */}
         <NavbarContent justify="end" className="flex items-center gap-4 mx-3">
-          {/* Button for creating post */}
-
           {user ? (
             <>
-              <Button
-                as={Link}
-                href="/create-post"
-                className="flex items-center gap-2 rounded-lg border-2 bg-slate-800"
-              >
-                <PlusIcon className="h-5 w-5" />
-                Create Post
-              </Button>
-              <LogOutButton />
+              <div className="flex items-center gap-2">
+                <Button
+                  as={Link}
+                  href="/create-post"
+                  className="flex items-center gap-2 rounded-lg border-2 bg-slate-800"
+                >
+                  <PlusIcon className="h-5 w-5" />
+                  Create Post
+                </Button>
+                <LogOutButton />
+              </div>
             </>
           ) : (
             <Button as={Link} href="/auth/log-in" className="bg-green-500">
