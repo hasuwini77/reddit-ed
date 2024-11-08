@@ -12,6 +12,7 @@ import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { X } from "lucide-react";
 
 const isOnlyWhitespace = (str: string | undefined) =>
   !str || str.trim().length === 0;
@@ -103,6 +104,12 @@ export default function CreatePostPage() {
     });
   });
 
+  const removeImage = useCallback(() => {
+    setPreviewImage(null);
+    setFileName(null);
+    setValue("image", undefined);
+  }, [setValue]);
+
   return (
     <div className="max-w-2xl mx-auto mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -130,18 +137,30 @@ export default function CreatePostPage() {
             {...getRootProps()}
             className={`mt-1 p-6 border-2 border-dashed rounded-lg ${
               isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
-            } cursor-pointer`}
+            } cursor-pointer relative`}
           >
             <input {...getInputProps()} />
             {previewImage ? (
               <div className="flex flex-col items-center">
-                <Image
-                  src={previewImage}
-                  alt="Preview"
-                  width={200}
-                  height={200}
-                  className="object-cover"
-                />
+                <div className="relative">
+                  <Image
+                    src={previewImage}
+                    alt="Preview"
+                    width={200}
+                    height={200}
+                    className="object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeImage();
+                    }}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 transform translate-x-1/2 -translate-y-1/2 hover:bg-red-600 focus:outline-none"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
                 <p className="mt-2 text-sm text-gray-500">{fileName}</p>
               </div>
             ) : isDragActive ? (
