@@ -104,7 +104,6 @@ export const createPost = async (
       }
       return { success: false, error: "Failed to create post" };
     }
-    console.log("Post created successfully");
 
     revalidatePath("/");
     return { success: true, message: "Post created successfully" };

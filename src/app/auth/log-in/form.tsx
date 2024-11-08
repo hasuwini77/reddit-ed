@@ -16,8 +16,6 @@ export const LogInForm = () => {
     mutationFn: logIn,
   });
 
-  console.log({ error });
-
   const {
     register,
     handleSubmit,
