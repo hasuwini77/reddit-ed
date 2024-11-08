@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { HomePostsType } from "../../utils/supabase/queries";
 import Link from "next/link";
 
 interface FeedPostProps {
@@ -39,8 +38,8 @@ export function FeedPost({
               alt={title}
               fill
               style={{
-                objectFit: "cover", // Replaces objectFit prop
-                borderRadius: "0.5rem", // Optional: rounded corners, if needed
+                objectFit: "cover",
+                borderRadius: "0.5rem",
               }}
               className="rounded-lg"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

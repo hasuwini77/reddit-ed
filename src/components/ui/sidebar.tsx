@@ -1,9 +1,10 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import { usePathname, useRouter } from "next/navigation";
 
 interface Links {
   label: string;
@@ -41,9 +42,16 @@ export const SidebarProvider = ({
   animate?: boolean;
 }) => {
   const [openState, setOpenState] = useState(false);
+  const pathname = usePathname();
 
   const open = openProp !== undefined ? openProp : openState;
   const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setOpen(false), 300);
+
+    return () => clearTimeout(timer);
+  }, [pathname, setOpen]);
 
   return (
     <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
@@ -167,6 +175,12 @@ export const SidebarLink = ({
   props?: LinkProps;
 }) => {
   const { open, animate } = useSidebar();
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+    // The menu will close automatically due to the pathname change
+  };
   return (
     <Link
       href={link.href}
@@ -174,10 +188,7 @@ export const SidebarLink = ({
         "flex items-center justify-start gap-2  group/sidebar py-2",
         className
       )}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick && onClick();
-      }}
+      onClick={handleClick}
       {...props}
     >
       {link.icon}

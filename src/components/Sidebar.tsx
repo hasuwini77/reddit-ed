@@ -1,9 +1,8 @@
-// MySidebar.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { Sidebar, SidebarBody } from "./ui/sidebar";
-import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
+import { IconArrowLeft, IconUserBolt } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
