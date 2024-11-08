@@ -47,68 +47,73 @@ export function MySidebar() {
     <div
       className={cn(
         "rounded-md flex flex-col md:flex-row bg-gradient-to-b from-[#1e3a8a] to-[#1e40af] dark:bg-gradient-to-b dark:from-[#0f172a] dark:to-[#1e3a8a] overflow-hidden",
-        "h-[70vh] w-auto flex-shrink-0"
+        "flex-shrink-0 min-h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10">
-          <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            <Link
-              href="/"
-              className={cn(
-                "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
-                pathname === "/" && "font-bold"
-              )}
-            >
-              <div className="h-5 w-6 bg-blue-700 dark:bg-blue-400 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-              {open && (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="font-medium text-white whitespace-pre"
-                >
-                  Feed
-                </motion.span>
-              )}
-            </Link>
-            <div className="mt-8 flex flex-col gap-2">
-              {links.map((link, idx) => (
-                <Link
-                  key={idx}
-                  href={link.href}
-                  onClick={link.onClick}
-                  className={cn(
-                    "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
-                    pathname === link.href && "font-bold"
-                  )}
-                >
-                  {link.icon}
-                  {open && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="font-medium text-white whitespace-pre"
-                    >
-                      {link.label}
-                    </motion.span>
-                  )}
-                </Link>
-              ))}
+        {/* Main container with flex layout */}
+        <div className="flex flex-col h-full">
+          {/* Scrollable content section */}
+          <SidebarBody className="flex-1 overflow-y-auto">
+            <div className="flex flex-col gap-10">
+              <Link
+                href="/"
+                className={cn(
+                  "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
+                  pathname === "/" && "font-bold"
+                )}
+              >
+                <div className="h-5 w-6 bg-blue-700 dark:bg-blue-400 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+                {open && (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="font-medium text-white whitespace-pre"
+                  >
+                    Feed
+                  </motion.span>
+                )}
+              </Link>
+              <div className="mt-8 flex flex-col gap-2">
+                {links.map((link, idx) => (
+                  <Link
+                    key={idx}
+                    href={link.href}
+                    onClick={link.onClick}
+                    className={cn(
+                      "font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20",
+                      pathname === link.href && "font-bold"
+                    )}
+                  >
+                    {link.icon}
+                    {open && (
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="font-medium text-white whitespace-pre"
+                      >
+                        {link.label}
+                      </motion.span>
+                    )}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
-          <div>
-            {isLoading ? ( // Show spinner if loading
+          </SidebarBody>
+
+          <div className="p-4 border-t-4 border-transparent fixed bottom-0 left-0 bg-clip-padding bg-gradient-to-r from-blue-900 via-blue-800 to-gray-900 rounded-lg">
+            {isLoading ? (
               <Spinner />
-            ) : user ? ( // If user is logged in, show their avatar
+            ) : user ? (
               <Link
                 href="/profile"
-                className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20"
+                className="font-normal flex space-x-2 items-center text-sm text-white py-1 z-20"
               >
                 <Image
                   src={user.avatar || "https://i.pravatar.cc/300"}
                   className="h-7 w-7 flex-shrink-0 rounded-full"
-                  width={50}
-                  height={50}
+                  width={100}
+                  height={100}
                   alt="Avatar"
                 />
                 {open && (
@@ -122,12 +127,27 @@ export function MySidebar() {
                 )}
               </Link>
             ) : (
-              <div className="font-normal text-sm text-white py-1 relative z-20">
-                Not logged in
+              <div className="font-normal flex space-x-2 items-center text-sm text-white py-1 z-20">
+                <Image
+                  src="/anonymous.png"
+                  className="h-7 w-7 flex-shrink-0 rounded-full"
+                  width={100}
+                  height={100}
+                  alt="Avatar-Not-Logged"
+                />
+                {open && (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="font-medium text-white whitespace-pre"
+                  >
+                    {"Not Logged In"}
+                  </motion.span>
+                )}
               </div>
             )}
           </div>
-        </SidebarBody>
+        </div>
       </Sidebar>
     </div>
   );
