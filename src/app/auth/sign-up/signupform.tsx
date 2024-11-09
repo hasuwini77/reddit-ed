@@ -28,15 +28,6 @@ export const SignUpForm = () => {
 
   const mutation = useMutation({
     mutationFn: signUp,
-    // onSuccess: (data) => {
-    //   if ("error" in data) {
-    //     setErrorMsg(
-    //       typeof data.error === "string"
-    //         ? data.error
-    //         : "Sign-up failed. Please check your information and try again."
-    //     );
-    //   }
-    // },
     onSuccess: () =>
       toast.success("User successfully Created", { richColors: true }),
     onError: (error) => toast.error(error.message),
@@ -44,16 +35,14 @@ export const SignUpForm = () => {
   });
 
   const onSubmit = (data: SignUpFormData) => {
-    setErrorMsg(null); // Clear any previous error messages
+    setErrorMsg(null);
     mutation.mutate(data);
   };
 
   return (
     <div className="flex justify-center items-center min-h-screenpx-4 py-8">
       <div className="w-full max-w-md bg-gray-700 rounded-lg shadow-md p-6 space-y-6">
-        <h2 className="text-2xl font-bold text-center text-gray-500">
-          Sign Up
-        </h2>
+        <h2 className="text-2xl font-bold text-center text-white">Sign Up</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Label
@@ -66,7 +55,8 @@ export const SignUpForm = () => {
               id="email"
               type="email"
               {...register("email")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 placeholder:text-white placeholder:opacity-50"
+              placeholder="Your Email"
             />
             {errors.email && (
               <p className="mt-1 text-xs text-red-500">
@@ -86,7 +76,8 @@ export const SignUpForm = () => {
               id="password"
               type="password"
               {...register("password")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="Password"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  placeholder:text-white placeholder:opacity-50"
             />
             {errors.password && (
               <p className="mt-1 text-xs text-red-500">
@@ -98,7 +89,7 @@ export const SignUpForm = () => {
           <div>
             <Label
               htmlFor="username"
-              className="text-sm font-medium text-gray-700"
+              className="text-sm font-medium text-gray-700 "
             >
               Username
             </Label>
@@ -106,7 +97,8 @@ export const SignUpForm = () => {
               id="username"
               type="text"
               {...register("username")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="Username"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  placeholder:text-white placeholder:opacity-50"
             />
             {errors.username && (
               <p className="mt-1 text-xs text-red-500">
@@ -126,7 +118,8 @@ export const SignUpForm = () => {
               id="avatar"
               type="url"
               {...register("avatar")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              placeholder="Avatar URL"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  placeholder:text-white placeholder:opacity-50"
             />
             {errors.avatar && (
               <p className="mt-1 text-xs text-red-500">
