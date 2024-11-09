@@ -28,13 +28,20 @@ export const LogInForm = () => {
   return (
     <form
       onSubmit={handleSubmit((values) => mutate(values))}
-      className="flex w-full max-w-md flex-col gap-4"
+      className="flex w-full max-w-md flex-col gap-4 text-white"
     >
-      <Input {...register("email")} error={errors.email} />
+      <Input
+        {...register("email")}
+        error={errors.email}
+        placeholder="Your Email"
+        className="placeholder:text-white placeholder:opacity-50"
+      />
       <Input
         {...register("password")}
         type="password"
+        placeholder="Password"
         error={errors.password}
+        className="placeholder:text-white placeholder:opacity-50"
       />
       <Button className="bg-slate-800" type="submit">
         {isPending ? (
