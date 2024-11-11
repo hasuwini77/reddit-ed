@@ -16,7 +16,7 @@ const avatarUrlSchema = z
     },
     {
       message:
-        "Please use an avatar URL from one of the following trusted sites: 'i.pravatar.cc' or 'avatar.iran.liara.run'. For example, try 'i.pravatar.cc/888' or 'avatar.iran.liara.run/public/20' to get a cool avatar!",
+        "Please use an avatar URL from one of the following trusted sites: 'i.pravatar.cc' or 'avatar.iran.liara.run'. For example, try 'https://i.pravatar.cc/888' or 'https://avatar.iran.liara.run/public/20' to get a cool avatar!",
     }
   )
   .optional()

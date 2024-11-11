@@ -11,16 +11,18 @@ interface User {
 
 export default function ProfilePage({ user }: { user: User }) {
   return (
-    <div>
-      <h1>Edit Profile</h1>
-      <EditProfileForm
-        defaultValues={{
-          email: user.email,
-          username: user.username,
-          avatar: user.avatar || "",
-        }}
-        userId={user.id}
-      />
+    <div className="py-1">
+      <h1 className="py-3 text-2xl">Edit Profile</h1>
+      <div className="py-2">
+        <EditProfileForm
+          defaultValues={{
+            email: user.email,
+            username: user.username,
+            avatar: user.avatar || "",
+          }}
+          userId={user.id}
+        />
+      </div>
     </div>
   );
 }
