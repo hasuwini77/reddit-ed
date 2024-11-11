@@ -28,8 +28,7 @@ export const SignUpForm = () => {
 
   const mutation = useMutation({
     mutationFn: signUp,
-    onSuccess: () =>
-      toast.success("User successfully Created", { richColors: true }),
+    onSuccess: () => toast.success("User successfully Created"),
     onError: (error) => toast.error(error.message),
     onSettled: () => toast.dismiss(),
   });
@@ -64,6 +63,26 @@ export const SignUpForm = () => {
               </p>
             )}
           </div>
+          <div>
+            <Label
+              htmlFor="username"
+              className="text-sm font-medium text-gray-700 "
+            >
+              Username
+            </Label>
+            <Input
+              id="username"
+              type="text"
+              {...register("username")}
+              placeholder="Username"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  placeholder:text-white placeholder:opacity-50"
+            />
+            {errors.username && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
 
           <div>
             <Label
@@ -82,27 +101,6 @@ export const SignUpForm = () => {
             {errors.password && (
               <p className="mt-1 text-xs text-red-500">
                 {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <Label
-              htmlFor="username"
-              className="text-sm font-medium text-gray-700 "
-            >
-              Username
-            </Label>
-            <Input
-              id="username"
-              type="text"
-              {...register("username")}
-              placeholder="Username"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50  placeholder:text-white placeholder:opacity-50"
-            />
-            {errors.username && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.username.message}
               </p>
             )}
           </div>

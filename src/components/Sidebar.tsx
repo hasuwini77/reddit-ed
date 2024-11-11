@@ -20,7 +20,6 @@ export function MySidebar() {
   const { refreshUser } = useUser();
 
   useEffect(() => {
-    // Refresh user data when the component mounts or when the route changes
     refreshUser();
   }, [refreshUser, pathname]);
 
