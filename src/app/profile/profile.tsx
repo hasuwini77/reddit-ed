@@ -1,6 +1,7 @@
 "use client";
 
 import { EditProfileForm } from "./form";
+import Image from "next/image";
 
 interface User {
   id: string;
@@ -23,6 +24,11 @@ export default function ProfilePage({ user }: { user: User }) {
           userId={user.id}
         />
       </div>
+      {user.avatar && (
+        <div className="m-0 py-0">
+          <Image src={user.avatar} width={100} height={100} alt="User-Avatar" />
+        </div>
+      )}
     </div>
   );
 }
