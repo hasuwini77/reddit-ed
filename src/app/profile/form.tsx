@@ -3,7 +3,6 @@
 import { editProfile } from "@/actions/edit-user";
 import { userProfileSchema } from "@/actions/schemas";
 import { Input } from "@/components/ui/input";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -22,8 +21,25 @@ export const EditProfileForm = ({
 }) => {
   const { refreshUser } = useUser();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserFormData>({
+    resolver: zodResolver(userProfileSchema),
+    defaultValues: {
+      email: defaultValues.email,
+      username: defaultValues.username,
+      avatar: defaultValues.avatar || "",
+    },
+    mode: "onBlur",
+  });
+
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: UserFormData) => editProfile({ userId, userData: data }),
+    mutationFn: async (data: UserFormData) => {
+      console.log("Submitting data:", data);
+      return editProfile({ userId, userData: data });
+    },
     onError: (error: Error) => {
       toast.error(
         error.message || "An error occurred while updating the profile"
@@ -39,20 +55,10 @@ export const EditProfileForm = ({
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UserFormData>({
-    resolver: zodResolver(userProfileSchema),
-    defaultValues: {
-      email: defaultValues.email,
-      username: defaultValues.username,
-      avatar: defaultValues.avatar || undefined,
-    },
+  const onSubmit = handleSubmit((data) => {
+    console.log("Form data before submission:", data);
+    mutate(data);
   });
-
-  const onSubmit = handleSubmit((data) => mutate(data));
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>

@@ -4,7 +4,6 @@ import { z } from "zod";
 import { userProfileSchema } from "./schemas";
 import { createClient } from "../../utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export const editProfile = async ({
   userId,

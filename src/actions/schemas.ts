@@ -5,13 +5,11 @@ const avatarUrlSchema = z
   .url()
   .refine(
     (url) => {
+      if (!url) return true;
       const allowedDomains = ["i.pravatar.cc", "avatar.iran.liara.run"];
       try {
         const parsedUrl = new URL(url);
-        return (
-          allowedDomains.includes(parsedUrl.hostname) &&
-          /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(parsedUrl.pathname)
-        );
+        return allowedDomains.includes(parsedUrl.hostname);
       } catch (e) {
         return false;
       }
@@ -21,7 +19,8 @@ const avatarUrlSchema = z
         "Please use an avatar URL from one of the following trusted sites: 'i.pravatar.cc' or 'avatar.iran.liara.run'. For example, try 'i.pravatar.cc/888' or 'avatar.iran.liara.run/public/20' to get a cool avatar!",
     }
   )
-  .optional();
+  .optional()
+  .or(z.literal(""));
 
 export const logInSchema = z.object({
   email: z.string().email("invalid email format"),
@@ -64,5 +63,5 @@ export const createReplySchema = z.object({
 export const userProfileSchema = z.object({
   email: z.string().email(),
   username: z.string().min(3).max(20),
-  avatar: z.string().url().nullable().optional(),
+  avatar: avatarUrlSchema,
 });

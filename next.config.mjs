@@ -7,6 +7,8 @@ const nextConfig = {
       "avatar.iran.liara.run",
       "gravatar.com",
       "sxkekcpzmbgnmntnhwfa.supabase.co",
+      "favicon.io/favicon-converter/",
+      "favicon.io",
     ],
   },
 };
