@@ -1,4 +1,3 @@
-// app/auth/sign-up/SignUpWrapper.tsx
 import { createClient } from "../../../../utils/supabase/server";
 import { redirect } from "next/navigation";
 import SignUpForm from "./signupform";
