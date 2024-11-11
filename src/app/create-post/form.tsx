@@ -111,7 +111,7 @@ export default function CreatePostPage() {
   }, [setValue]);
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+    <div className="max-w-2xl mx-auto mt-10  p-8 rounded-lg ">
       <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
         Create a New Post
       </h2>
