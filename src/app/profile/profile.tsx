@@ -6,7 +6,7 @@ interface User {
   id: string;
   email: string;
   username: string;
-  avatar: string | "";
+  avatar: string | null | undefined;
 }
 
 export default function ProfilePage({ user }: { user: User }) {
@@ -17,7 +17,7 @@ export default function ProfilePage({ user }: { user: User }) {
         defaultValues={{
           email: user.email,
           username: user.username,
-          avatar: user.avatar,
+          avatar: user.avatar || "",
         }}
         userId={user.id}
       />
